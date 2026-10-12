@@ -1,0 +1,1187 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Speed Lab Grand Prix</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Aleo:wght@600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#053F5B;--purple:#795192;--green:#62A043;--pink:#E57B91;--blue:#056891;
+  --yellow:#FFDD4F;--sky:#A6DFF6;--coral:#F36E4E;--cream:#FFF1E4;
+  --ink:#0d2633;--muted:#5b6f7a;--line:#dbe4ea;--bg:#f6f9fb;--card:#fff;
+  --ok:#3f8a2a;--okbg:#eaf5e4;--bad:#c2412a;--badbg:#fdece8;
+  --r:16px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Poppins,Arial,sans-serif;-webkit-text-size-adjust:100%}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none}
+h1,h2,h3{font-family:Aleo,Rockwell,Georgia,serif;margin:0;line-height:1.15;color:var(--navy)}
+.wrap{max-width:860px;margin:0 auto;padding:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px;margin:14px 0}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 20px;border-radius:999px;font-weight:700;background:var(--navy);color:#fff;min-height:48px;transition:transform .08s,opacity .2s}
+.btn:active{transform:scale(.97)}
+.btn.alt{background:#fff;color:var(--navy);border:2px solid var(--navy)}
+.btn.green{background:var(--green)}.btn.purple{background:var(--purple)}.btn.pink{background:var(--pink)}.btn.coral{background:var(--coral)}.btn.blue{background:var(--blue)}
+.btn.sm{padding:8px 14px;min-height:38px;font-size:14px}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.muted{color:var(--muted)}
+.small{font-size:13px}
+.tag{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--purple)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.grow{flex:1}
+input.field{width:100%;padding:14px 16px;border:2px solid var(--line);border-radius:12px;font-size:18px;background:#fff}
+input.field:focus{outline:none;border-color:var(--blue)}
+.code-in{text-transform:uppercase;letter-spacing:.3em;font-weight:800;text-align:center;font-size:28px!important}
+.center{text-align:center}
+.hide{display:none!important}
+
+/* top bar */
+.bar{position:sticky;top:0;z-index:20;background:var(--navy);color:#fff;padding:10px 16px;display:flex;align-items:center;gap:12px}
+.bar .brand{font-family:Aleo,Rockwell,serif;font-weight:800;font-size:18px}
+.bar .pill{background:rgba(255,255,255,.14);padding:6px 12px;border-radius:999px;font-weight:700;font-size:14px;white-space:nowrap}
+.bar .pill.timer{background:var(--yellow);color:var(--navy)}
+.bar .pill.warn{background:var(--coral)}
+
+/* avatar */
+.av{position:relative;display:inline-flex;align-items:center;justify-content:center;width:var(--s);height:var(--s);min-width:var(--s);border-radius:50%;background:var(--c);box-shadow:inset 0 0 0 3px rgba(255,255,255,.55)}
+.av-e{font-size:calc(var(--s)*.56);line-height:1}
+.av-r{position:absolute;right:-4px;bottom:-4px;font-size:calc(var(--s)*.36);background:#fff;border-radius:50%;width:calc(var(--s)*.48);height:calc(var(--s)*.48);display:flex;align-items:center;justify-content:center;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+
+/* choice grids */
+.grid{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(180px,1fr))}
+.choice{border:2px solid var(--line);background:#fff;border-radius:14px;padding:14px;text-align:left;font-weight:600;min-height:56px;display:flex;align-items:center;gap:10px}
+.choice:hover{border-color:var(--sky)}
+.choice.on{border-color:var(--blue);background:#eef8fd;box-shadow:0 0 0 3px var(--sky)}
+.choice .big{font-size:30px}
+.swatch{width:56px;height:56px;border-radius:50%;border:4px solid #fff;box-shadow:0 0 0 2px var(--line)}
+.swatch.on{box-shadow:0 0 0 4px var(--blue)}
+.steps{display:flex;gap:6px;margin:4px 0 14px}
+.steps i{height:6px;flex:1;border-radius:3px;background:var(--line)}
+.steps i.on{background:var(--green)}
+
+/* lesson parts */
+.ctx{background:var(--cream);border-radius:14px;padding:16px 18px;font-size:18px;line-height:1.5}
+.part{border-top:1px solid var(--line);padding:18px 0 6px}
+.part:first-of-type{border-top:0}
+.part h3{font-family:Poppins,Arial,sans-serif;font-size:19px;font-weight:700;color:var(--ink);margin-bottom:10px}
+.opts{display:grid;gap:8px;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));margin-bottom:10px}
+.opt{border:2px solid var(--line);background:#fff;border-radius:12px;padding:12px 14px;text-align:left;font-weight:600;min-height:52px}
+.opt.on{border-color:var(--blue);background:#eef8fd}
+.opt.right{border-color:var(--ok);background:var(--okbg)}
+.opt[disabled]{cursor:default}
+.ans-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.ans-row input.field{max-width:220px}
+.unit{font-weight:600;color:var(--muted)}
+.fb{margin-top:10px;padding:12px 14px;border-radius:12px;font-weight:600;line-height:1.45}
+.fb.ok{background:var(--okbg);color:var(--ok)}
+.fb.bad{background:var(--badbg);color:var(--bad)}
+.fb.info{background:#eef4ff;color:var(--blue)}
+.fb.reveal{background:#f3ecf7;color:var(--purple)}
+.dnl{width:100%;height:auto;display:block;margin:6px 0 10px}
+.banner{padding:12px 16px;border-radius:12px;font-weight:700;margin:12px 0}
+.banner.lock{background:var(--yellow);color:var(--navy)}
+.banner.rev{background:#f3ecf7;color:var(--purple)}
+
+/* markup */
+.mk{font-size:22px;line-height:2.1;margin:10px 0}
+.mk .w{padding:2px 4px;border-radius:6px;cursor:pointer;user-select:none;-webkit-user-select:none}
+.mk .w.on{background:var(--yellow);box-shadow:0 0 0 2px #f2c400 inset}
+.mk .w.key{text-decoration:underline 3px var(--purple);text-underline-offset:5px}
+
+/* freeze overlay */
+.freeze{position:fixed;inset:0;z-index:100;background:var(--navy);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px}
+.freeze .eyes{font-size:110px;animation:bob 1.6s ease-in-out infinite}
+.freeze h1{color:#fff;font-size:44px;margin-top:10px}
+@keyframes bob{50%{transform:translateY(-10px)}}
+
+/* track */
+.track{position:relative;background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px 12px;overflow:hidden}
+.lane{position:relative;height:46px;border-bottom:1px dashed var(--line)}
+.lane:last-child{border-bottom:0}
+.lane .runner{position:absolute;top:4px;left:0;display:flex;align-items:center;gap:6px;white-space:nowrap;transition:left .5s ease}
+.lane .runner.live{transition:none}
+.lane .nm{font-size:13px;font-weight:700;background:rgba(255,255,255,.85);padding:1px 6px;border-radius:6px}
+.lane .dist{font-size:12px;font-weight:700;color:var(--blue)}
+.finish{position:absolute;top:0;bottom:0;right:44px;width:6px;background:repeating-linear-gradient(0deg,var(--navy) 0 6px,#fff 6px 12px);opacity:.7}
+.ticks{position:relative;height:20px;margin:0 0 4px}
+.ticks span{position:absolute;transform:translateX(-50%);font-size:11px;color:var(--muted);font-weight:600}
+
+/* host */
+.host{display:grid;grid-template-columns:230px 1fr 400px;gap:14px;padding:14px;align-items:start}
+.flow{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:8px;position:sticky;top:70px;max-height:calc(100vh - 90px);overflow:auto}
+.flow button{display:block;width:100%;text-align:left;padding:8px 10px;border-radius:10px;font-size:14px}
+.flow button .ph{display:block;font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.flow button.cur{background:var(--navy);color:#fff}
+.flow button.cur .ph{color:var(--sky)}
+.flow button.done{opacity:.6}
+.ctrl{display:flex;gap:8px;flex-wrap:wrap;align-items:center;background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:10px;position:sticky;top:62px;z-index:5}
+.ctrl .btn{min-height:44px;padding:10px 16px}
+.ctrl .on{box-shadow:0 0 0 3px var(--yellow)}
+.notes{background:var(--cream);border-radius:14px;padding:14px 16px;font-size:14px;line-height:1.5}
+.notes b{color:var(--navy)}
+.notes ul{margin:4px 0 8px;padding-left:18px}
+.stat{display:flex;align-items:baseline;gap:8px}
+.stat .n{font-size:34px;font-weight:800;color:var(--navy)}
+.bars .b{display:flex;align-items:center;gap:8px;margin:4px 0;font-size:14px}
+.bars .b .t{width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
+.bars .b .f{height:16px;border-radius:8px;background:var(--sky)}
+.bars .b .f.c{background:var(--green)}
+.bars .b .f.m{background:var(--coral)}
+table.ros{width:100%;border-collapse:collapse;font-size:13px}
+table.ros th,table.ros td{padding:6px 4px;border-bottom:1px solid var(--line);text-align:left}
+table.ros td.c{text-align:center}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#bbb;margin-right:4px}
+.dot.on{background:var(--green)}
+.chip{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12px;font-weight:700;background:var(--line)}
+.chip.ok{background:var(--okbg);color:var(--ok)}.chip.bad{background:var(--badbg);color:var(--bad)}.chip.mid{background:#fff6cc;color:#7a5d00}.chip.mis{background:var(--coral);color:#fff}
+.code-big{font-family:Aleo,Rockwell,serif;font-weight:800;font-size:56px;letter-spacing:.12em;color:var(--navy)}
+.heat .w{padding:2px 3px;border-radius:5px}
+.proj{padding:24px 32px}
+.proj h1{font-size:44px}
+.proj .ctx{font-size:26px}
+.proj-ctrl{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);display:flex;gap:8px;background:rgba(5,63,91,.92);padding:8px;border-radius:999px;z-index:30;opacity:.25;transition:opacity .2s}
+.proj-ctrl:hover,.proj-ctrl:focus-within{opacity:1}
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--navy);color:#fff;padding:12px 18px;border-radius:12px;z-index:200;font-weight:600}
+.status{padding:8px 12px;border-radius:10px;background:#fff6cc;color:#7a5d00;font-weight:600;font-size:14px;margin:8px 0}
+.podium{display:flex;justify-content:center;align-items:flex-end;gap:14px;margin:20px 0}
+.podium .p{text-align:center}
+.podium .blk{background:var(--navy);color:#fff;border-radius:12px 12px 0 0;width:120px;display:flex;align-items:flex-start;justify-content:center;padding-top:8px;font-family:Aleo,serif;font-weight:800;font-size:30px}
+@media (max-width:1150px){.host{grid-template-columns:1fr}.flow{position:static;max-height:none;display:flex;overflow-x:auto;gap:4px}.flow button{min-width:150px}}
+@media (max-width:600px){.wrap{padding:12px}.card{padding:16px}.ctx{font-size:17px}.mk{font-size:19px}.bar .brand{font-size:15px}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="overlay"></div>
+<script>
+"use strict";
+/* =====================================================================
+   SPEED LAB GRAND PRIX — G6 M2 Lesson 9: Constant Speed
+   Teacher hosts (?host). Scholars join with a 4-letter room code.
+   Sync: PeerJS (WebRTC) by default; ?net=local uses BroadcastChannel
+   (same-device demo/testing).
+   ===================================================================== */
+const PARAMS = new URLSearchParams(location.search);
+const NET_MODE = PARAMS.get('net') === 'local' ? 'local' : 'peer';
+const IS_HOST = PARAMS.has('host');
+const PREFIX = 'momentum-tgs-speedlab-l9-';
+const PEER_OPTS = { debug: 0, config: { iceServers: [
+  { urls: 'stun:stun.l.google.com:19302' }, { urls: 'stun:stun1.l.google.com:19302' }, { urls: 'stun:global.stun.twilio.com:3478' } ] } };
+const TEACHER = 'Mr. Shaw';
+
+/* ---------------- helpers ---------------- */
+const $ = (s, el = document) => el.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const r2 = n => Math.round(n * 100) / 100;
+const fmt = n => (n == null || isNaN(n)) ? '—' : String(r2(n));
+const near = (a, b) => Math.abs(a - b) <= Math.max(0.02, Math.abs(b) * 0.06);
+const store = {
+  get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (_) { return null; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (_) {} },
+  del(k) { try { localStorage.removeItem(k); } catch (_) {} }
+};
+function parseNum(s) {
+  if (s == null) return null;
+  s = String(s).trim().replace(/,/g, '.');
+  const fr = s.match(/^(-?\d*\.?\d+)\s*\/\s*(\d*\.?\d+)$/);
+  if (fr) { const d = parseFloat(fr[2]); return d ? parseFloat(fr[1]) / d : null; }
+  const m = s.match(/-?\d*\.?\d+/);
+  return m ? parseFloat(m[0]) : null;
+}
+function toast(msg) { const t = document.createElement('div'); t.className = 'toast'; t.textContent = msg; document.body.appendChild(t); setTimeout(() => t.remove(), 2200); }
+function loadScript(src) { return new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = rej; document.head.appendChild(s); }); }
+let peerLib;
+function loadPeerLib() {
+  if (window.Peer) return Promise.resolve();
+  if (!peerLib) peerLib = loadScript('https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js')
+    .catch(() => loadScript('https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js'));
+  return peerLib;
+}
+const uid = () => Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4);
+
+/* ---------------- characters ---------------- */
+const ARCH = {
+  cheetah: { e: '🐆', name: 'The Bold Sprinter', d: 'You jump in first and bring the energy.' },
+  turtle: { e: '🐢', name: 'The Steady Strategist', d: 'Constant and unstoppable — you never quit.' },
+  robot: { e: '🤖', name: 'The Precise Calculator', d: 'You check every detail before you move.' },
+  falcon: { e: '🦅', name: 'The Big-Picture Planner', d: 'You see the whole route before you go.' },
+  dolphin: { e: '🐬', name: 'The Team Captain', d: 'You make sure nobody gets left behind.' },
+  fox: { e: '🦊', name: 'The Clever Problem-Solver', d: 'You find the smart shortcut.' },
+  dragon: { e: '🐉', name: 'The Fearless Challenger', d: 'Hard problems? You run toward them.' },
+  octopus: { e: '🐙', name: 'The Creative Multitasker', d: 'You see ideas nobody else sees.' }
+};
+const VIBE = [
+  { q: 'In a group project, you’re usually the one who…', w: 3, opts: [
+    ['Jumps in first', 'cheetah'], ['Keeps everyone calm and steady', 'turtle'], ['Double-checks every detail', 'robot'], ['Plans the big picture', 'falcon'],
+    ['Makes sure everyone is included', 'dolphin'], ['Finds the clever shortcut', 'fox'], ['Takes on the hardest part', 'dragon'], ['Comes up with creative ideas', 'octopus']] },
+  { q: 'Pick your perfect Saturday:', w: 2, opts: [
+    ['Racing friends at the park', 'cheetah dragon'], ['Building or fixing something', 'robot fox'], ['Drawing, music, or making videos', 'octopus'],
+    ['Hanging out with family & friends', 'dolphin turtle'], ['Exploring somewhere new', 'falcon fox'], ['Beating a hard level in a game', 'dragon robot']] },
+  { q: 'When something gets tough, you…', w: 2, opts: [
+    ['Push through — go, go, go!', 'cheetah'], ['Slow down and stay steady', 'turtle'], ['Break it into small steps', 'robot'], ['Ask the team for ideas', 'dolphin'],
+    ['Try a totally new way', 'octopus'], ['Step back and see the big picture', 'falcon']] }
+];
+const RIDES = {
+  sneakers: { e: '👟', n: 'Sneakers', like: 'Sports & running' }, skate: { e: '🛹', n: 'Skateboard', like: 'Tricks & style' },
+  bike: { e: '🚲', n: 'Bike', like: 'Being outside' }, scooter: { e: '🛴', n: 'Scooter', like: 'Cruising with friends' },
+  car: { e: '🏎️', n: 'Race car', like: 'Cars & speed' }, rocket: { e: '🚀', n: 'Rocket', like: 'Space & science' },
+  skates: { e: '🛼', n: 'Roller skates', like: 'Music & dancing' }, horse: { e: '🐎', n: 'Horse', like: 'Animals & nature' }
+};
+const COLORS = { navy: '#053F5B', purple: '#795192', green: '#62A043', pink: '#E57B91', blue: '#056891', yellow: '#FFDD4F', coral: '#F36E4E', sky: '#A6DFF6' };
+const PHRASES = ['Constant and unstoppable!', 'Per second, every second.', 'Zoom zoom!', 'Math is my fuel.', 'Can’t catch me!', 'Steady wins the race.', 'Let’s ride!', 'Faster? Prove it.'];
+function avatar(pr, size = 44) {
+  const a = ARCH[pr?.arch]; const r = RIDES[pr?.ride]; const c = COLORS[pr?.color] || '#dbe4ea';
+  return `<span class="av" style="--c:${c};--s:${size}px"><span class="av-e">${a ? a.e : '❔'}</span>${r ? `<span class="av-r">${r.e}</span>` : ''}</span>`;
+}
+function cleanProfile(p) {
+  if (!p || typeof p !== 'object') return null;
+  if (!ARCH[p.arch] || !RIDES[p.ride] || !COLORS[p.color]) return null;
+  return { arch: p.arch, ride: p.ride, color: p.color, phrase: PHRASES.includes(p.phrase) ? p.phrase : PHRASES[0] };
+}
+const cleanName = s => String(s || '').replace(/[^\p{L}\p{N} .'\-]/gu, '').trim().slice(0, 16) || 'Scholar';
+
+/* ---------------- misconceptions (from the teacher guide) ---------------- */
+const MIS = {
+  'WRONG-WAY': { t: 'Multiplied by 10 instead of dividing', h: 'Dividing by 10 makes a number SMALLER. Each digit moves one place to the right.' },
+  'PLACES': { t: 'Shifted the wrong number of places', h: 'Check the place value: ÷10 shifts digits one place smaller, ÷100 shifts two places.' },
+  'REMAINDER': { t: 'Left a remainder instead of tenths', h: '10 goes into 34 three times with 4 left over — that leftover is 4 TENTHS. Write it as a decimal.' },
+  'INV': { t: 'Divided time ÷ distance (seconds per meter)', h: 'That number tells how many SECONDS it takes to go 1 meter. We want how many METERS in 1 second: distance ÷ time.' },
+  'DIST-ONLY': { t: 'Judged speed by distance only', h: 'Farther doesn’t always mean faster — you have to check the TIME too.' },
+  'TIME-BIGGER': { t: 'Thinks more time = faster', h: 'Same distance in LESS time is faster.' },
+  'NOT-10X': { t: 'Gave the 1-second distance, not 10 seconds', h: 'That’s how far you go in ONE second. At this rate, how far in TEN seconds?' }
+};
+
+/* ---------------- double number line ---------------- */
+function dnlSVG(o) {
+  const n = o.n, W = 600, H = 156, x0 = 26, x1 = W - 26, yT = 46, yB = 100;
+  const X = i => x0 + (x1 - x0) * i / n;
+  let s = `<svg class="dnl" viewBox="0 0 ${W} ${H}" role="img" aria-label="Double number line: ${esc(o.topLabel || 'Distance traveled (meters)')} over ${esc(o.botLabel || 'Elapsed time (seconds)')}">`;
+  s += `<text x="${x0}" y="14" font-size="13" font-weight="700" fill="#5b6f7a">${esc(o.topLabel || 'Distance traveled (meters)')}</text>`;
+  s += `<text x="${x0}" y="${H - 2}" font-size="13" font-weight="700" fill="#5b6f7a">${esc(o.botLabel || 'Elapsed time (seconds)')}</text>`;
+  s += `<line x1="${x0 - 8}" y1="${yT}" x2="${x1 + 8}" y2="${yT}" stroke="#053F5B" stroke-width="3"/><line x1="${x0 - 8}" y1="${yB}" x2="${x1 + 8}" y2="${yB}" stroke="#053F5B" stroke-width="3"/>`;
+  const fs = n > 20 ? 11 : 15;
+  for (let i = 0; i <= n; i++) {
+    const x = X(i), hi = (o.hi === i);
+    if (hi) s += `<rect x="${x - 16}" y="${yT - 30}" width="32" height="${yB - yT + 52}" rx="8" fill="#FFDD4F" opacity=".35"/>`;
+    s += `<line x1="${x}" y1="${yT - 7}" x2="${x}" y2="${yT + 7}" stroke="#053F5B" stroke-width="2"/><line x1="${x}" y1="${yB - 7}" x2="${x}" y2="${yB + 7}" stroke="#053F5B" stroke-width="2"/>`;
+    const t = o.top?.[i] ?? '', b = o.bot?.[i] ?? '';
+    if (t !== '') s += `<text x="${x}" y="${yT - 13}" text-anchor="middle" font-size="${t === '?' ? 20 : fs}" font-weight="800" fill="${t === '?' ? '#E57B91' : '#053F5B'}">${esc(t)}</text>`;
+    if (b !== '') s += `<text x="${x}" y="${yB + 24}" text-anchor="middle" font-size="${fs}" font-weight="700" fill="#056891">${esc(b)}</text>`;
+  }
+  return s + '</svg>';
+}
+function ownDNL(t, ans) { // 10 m in t seconds; ? at 1 second
+  t = Math.max(1, Math.round(t)); const top = [], bot = [];
+  for (let i = 0; i <= t; i++) { top.push(i === 0 ? '0' : i === t ? '10' : i === 1 ? (ans != null ? fmt(ans) : '?') : ''); bot.push(i === 0 || i === 1 || i === t || (t <= 12) ? String(i) : ''); }
+  return dnlSVG({ n: t, top, bot, hi: 1 });
+}
+function fixedDNL(dist, secs, ans) {
+  const top = [], bot = [];
+  for (let i = 0; i <= secs; i++) { top.push(i === 0 ? '0' : i === secs ? String(dist) : i === 1 ? (ans != null ? fmt(ans) : '?') : ''); bot.push(String(i)); }
+  return dnlSVG({ n: secs, top, bot, hi: 1 });
+}
+function trainA() { const top = [], bot = []; for (let i = 0; i <= 8; i++) { top.push(i === 0 ? '0' : i === 1 ? '12.5' : i === 8 ? '100' : ''); bot.push(i === 0 ? '0' : i === 1 ? '1' : ''); } return dnlSVG({ n: 8, top, bot }); }
+function trainB() { return dnlSVG({ n: 4, top: ['0', '', '', '', '100'], bot: ['0', '', '', '', '4'] }); }
+
+/* ---------------- LESSON FLOW (G6M2 L9, Zearn teacher materials) ---------------- */
+const NT_POLL = { id: 'how', kind: 'poll', prompt: 'How did you think about it?', options: ['Place value — the digits shift to a smaller place', 'Multiplication — 10 × ___ = the number', 'I used the problem before this one', 'Fractions — I wrote it over 10 or 100', 'Something else'] };
+const ntNotes = (extra) => ({
+  say: ['Quiet think time first — signal when you have an answer AND a strategy.', 'Who can restate ___’s reasoning in a different way?', 'Did anyone solve it the same way but would explain it differently?', 'Do you agree or disagree? Why?'],
+  look: ['Strategies based in PLACE VALUE (emphasize these over “move the decimal” or “cross out zeros”).', ...(extra || [])]
+});
+const SCREENS = [
+  { id: 'lobby', kind: 'lobby', phase: 'Get Ready', title: 'Build your racer',
+    student: 'Build your racer while everyone joins. Pick what fits YOU.',
+    notes: { say: ['Today you are speed scientists. Build a racer that matches your personality — you have 3 minutes.', 'I see ___ already locked in a racer. ___ is choosing a color.'], look: ['Every scholar shows a green dot and an avatar on the roster before you advance.'] } },
+
+  { id: 'obj', kind: 'markup', phase: 'Objective', title: 'Mark up today’s targets',
+    student: 'You hold the pen. Tap the words that tell WHAT we’re learning and HOW we’ll show it. Mark at least 3.',
+    sentences: ['Let’s use ratios to work with how fast things move.', 'I can create double number line diagrams to help me reason about constant speed.', 'I can decide which of two objects is moving faster based on information about the distances they travel and the amounts of time.'],
+    keys: ['ratios', 'fast', 'double', 'number', 'line', 'diagrams', 'constant', 'speed', 'faster', 'distances', 'amounts', 'time'],
+    notes: { say: ['Pens up. Tap the words that matter most — you’re marking YOUR copy.', 'Look at the heat map: most of us marked ___. Why does that word matter today?', 'Say it with me: constant speed means the SAME distance every second.'], look: ['constant speed', 'double number line', 'faster', 'distance AND time'] } },
+
+  { id: 'wu1', kind: 'parts', phase: 'Warm-Up · Number Talk', title: 'Find the quotient mentally', projBig: '30 ÷ 10',
+    parts: [{ id: 'q', kind: 'num', prompt: '30 ÷ 10 = ?', answer: 3, misc: n => n === 300 ? 'WRONG-WAY' : (n === 0.3 ? 'PLACES' : null), explain: '30 ÷ 10 = 3, because 3 × 10 = 30.' }, NT_POLL],
+    notes: ntNotes(['Display one problem at a time.']) },
+  { id: 'wu2', kind: 'parts', phase: 'Warm-Up · Number Talk', title: 'Find the quotient mentally', projBig: '34 ÷ 10',
+    parts: [{ id: 'q', kind: 'num', prompt: '34 ÷ 10 = ?', answer: 3.4, misc: n => n === 340 ? 'WRONG-WAY' : (n === 3 || n === 4) ? 'REMAINDER' : (n === 0.34 || n === 34) ? 'PLACES' : null, explain: '34 ÷ 10 = 3.4 — 10 goes into 34 three times with 4 tenths left over.' }, NT_POLL],
+    notes: ntNotes(['Students may say “3 remainder 4” — connect the leftover 4 to 4 tenths.']) },
+  { id: 'wu3', kind: 'parts', phase: 'Warm-Up · Number Talk', title: 'Find the quotient mentally', projBig: '3.4 ÷ 10',
+    parts: [{ id: 'q', kind: 'num', prompt: '3.4 ÷ 10 = ?', answer: 0.34, misc: n => n === 34 ? 'WRONG-WAY' : (n === 0.034 || n === 3.4) ? 'PLACES' : null, explain: '3.4 ÷ 10 = 0.34 — divide the last answer by 10 again.' }, NT_POLL],
+    notes: ntNotes(['Students may use the previous problem: 3.4 ÷ 10 is the last answer divided by 10.']) },
+  { id: 'wu4', kind: 'parts', phase: 'Warm-Up · Number Talk', title: 'Find the quotient mentally', projBig: '34 ÷ 100',
+    parts: [{ id: 'q', kind: 'num', prompt: '34 ÷ 100 = ?', answer: 0.34, misc: n => n === 3400 ? 'WRONG-WAY' : (n === 3.4 || n === 0.034) ? 'PLACES' : null, explain: '34 ÷ 100 = 0.34 — same quotient as 3.4 ÷ 10, because both numbers were multiplied by 10.' }, NT_POLL],
+    notes: ntNotes(['Students may notice the dividend AND divisor were both multiplied by 10, so the quotient stays the same.']) },
+
+  { id: 'a1intro', kind: 'info', phase: 'Activity 1 · Moving 10 Meters', title: 'Collect your speed data',
+    student: 'Partner up. Each of you is the MOVER once slowly and once quickly, and the TIMER for your partner.',
+    steps: ['The TIMER stands at the finish line with the stopwatch. The MOVER stands at the warm-up mark.', 'Round 1: the mover starts moving at a SLOW, STEADY speed. At the start line they say “Start!” and the timer starts the stopwatch.', 'The mover keeps moving steadily. At the finish line the timer stops the watch and records the time, rounded to the nearest second.', 'Round 2: same steps, but at a QUICK, STEADY speed.', 'Switch roles until everyone has gone twice: once slow, once quick.'],
+    tip: 'Moving slowly? Pretend you’re carrying a full cup of water and trying not to spill it.',
+    notes: { say: ['Your job is CONSTANT speed — the same speed the whole way. The 1-meter warm-up zone is where you get up to your steady speed.', 'Move like you’re balancing something on your head.'], look: ['4 paths: 1 m warm-up zone + 10 m measuring zone (set up before class).', 'No space or time? Scholars can run a Time Trial with their racer on the next screen to generate data.'] } },
+
+  { id: 'a1data', kind: 'data', phase: 'Activity 1 · Moving 10 Meters', title: 'Record your times',
+    student: 'Use the times your partner recorded while YOU were moving 10 meters. Round to the nearest second.',
+    notes: { say: ['Enter the times your partner collected while YOU were moving.', 'No real data? Tap Time Trial and your racer will run 10 meters for you.'], look: ['Quick time must be less than slow time.', 'Watch the data table for unrealistic times (e.g., 0 or 200 s).'] } },
+
+  { id: 'a1dnl', kind: 'parts', phase: 'Activity 1 · Moving 10 Meters', title: 'How far in ONE second?', needsData: true,
+    context: 'Your double number lines use YOUR data: 10 meters in your time. Estimate the distance at the 1-second mark.',
+    parts: [
+      { id: 'slow', kind: 'num', own: 'slow', unit: 'meters in 1 second', prompt: 'Moving SLOWLY: about how many meters did you travel in 1 second?', answer: p => 10 / p.data.slow, rel: 0.1, min: 0.05, misc: (n, p) => near(n, p.data.slow / 10) ? 'INV' : null, hint: 'Mark 5 meters halfway — it took half your time. Keep splitting, or divide: 10 ÷ your time.', explain: p => `10 meters ÷ ${p.data.slow} seconds ≈ ${fmt(10 / p.data.slow)} meters per second.` },
+      { id: 'fast', kind: 'num', own: 'fast', unit: 'meters in 1 second', prompt: 'Moving QUICKLY: about how many meters did you travel in 1 second?', answer: p => 10 / p.data.fast, rel: 0.1, min: 0.05, misc: (n, p) => near(n, p.data.fast / 10) ? 'INV' : null, hint: 'Your 10 meters is split into equal seconds. What is one of those pieces? 10 ÷ your time.', explain: p => `10 meters ÷ ${p.data.fast} seconds ≈ ${fmt(10 / p.data.fast)} meters per second.` }],
+    notes: { say: ['Use the phrase: “I traveled about ___ meters per second.”', 'Where do you see “meters per second” on your double number line?'], look: ['Different methods for the 1-second distance — select 2–3 to share (MLR7 Compare & Connect).', 'If stuck: mark 5 m halfway between 0 and 10 — the time is half the total. That cues division.'] } },
+
+  { id: 'a1cmp', kind: 'parts', phase: 'Activity 1 · Moving 10 Meters', title: 'Fast vs. slow diagrams',
+    context: 'Compare your SLOW double number line with your QUICK one (or trade with someone who is not your partner).',
+    parts: [{ id: 'm', kind: 'multi', prompt: 'How is the diagram for moving QUICKLY different? Choose ALL that are true.', options: ['It shows MORE meters traveled in 1 second', 'It shows FEWER seconds to travel 10 meters', 'The 10 meters lines up with a BIGGER time', 'It shows a distance longer than 10 meters'], answer: [0, 1], explain: 'Faster movement means more meters in the same time (1 second) OR the same distance (10 meters) in less time.' }],
+    notes: { say: ['We can compare speed TWO ways: same distance — who needs less time? Same time — who goes farther?', 'On a double number line we assume CONSTANT speed: the ratios of meters to seconds stay equivalent the whole trip. Equal intervals show that steady rate.'], look: ['Scholars who pick only one of the two true statements — push them to see both comparisons.'] } },
+
+  { id: 'race', kind: 'race', phase: 'Activity 1 · Moving 10 Meters', title: 'Class Grand Prix: 10 seconds at constant speed',
+    student: 'Every racer moves at YOUR quick speed for 10 seconds. Watch: the SAME distance every second.',
+    notes: { say: ['Every racer moves at the quick speed you measured — the same number of meters EVERY second.', 'Whose racer went the farthest in 10 seconds? How could you predict it from meters per second?'], look: ['Point at the equal jumps on each scholar’s live double number line: that is constant speed.'] } },
+
+  { id: 'a2q1', kind: 'parts', phase: 'Activity 2 · Moving for 10 Seconds', title: 'Lin vs. Diego',
+    context: 'Lin and Diego both ran for <b>10 seconds</b>, each at their own constant speed. Lin ran <b>40 meters</b> and Diego ran <b>55 meters</b>.',
+    parts: [
+      { id: 'who', kind: 'mc', prompt: 'Who was moving faster?', options: ['Lin', 'Diego', 'They had the same speed'], answer: 1, explain: 'Diego — he covered a greater distance in the same amount of time.' },
+      { id: 'why', kind: 'mc', prompt: 'Which reason proves it?', options: ['He went farther in the SAME amount of time', 'He ran for more seconds', 'He took less time to finish', 'The bigger number is always faster'], answer: 0, mis: { 3: 'DIST-ONLY', 1: 'TIME-BIGGER' }, explain: 'They both ran 10 seconds, so the one who went farther in that time is faster.' }],
+    notes: { say: ['Quiet think time, then share with your partner (Think-Pair-Share).', 'Last activity: same distance, different times. Now: same TIME, different distances.'], look: ['“Diego ran farther, so he’s faster” is not ALWAYS correct — Han will show that. Attend to both distance AND time.'] } },
+
+  { id: 'a2q2', kind: 'parts', phase: 'Activity 2 · Moving for 10 Seconds', title: 'How far in 1 second?',
+    context: 'Lin ran 40 meters in 10 seconds. Diego ran 55 meters in 10 seconds. Both at constant speeds.',
+    parts: [
+      { id: 'lin', kind: 'num', dnl: [40, 10], unit: 'meters per second', prompt: 'How far did LIN move in 1 second?', answer: 4, misc: n => near(n, 0.25) ? 'INV' : null, hint: 'The 10 seconds are split into 10 equal jumps. Split the 40 meters the same way.', explain: '40 ÷ 10 = 4 meters per second.' },
+      { id: 'diego', kind: 'num', dnl: [55, 10], unit: 'meters per second', prompt: 'How far did DIEGO move in 1 second?', answer: 5.5, misc: n => near(n, 10 / 55) ? 'INV' : (n === 5 || n === 55) ? 'PLACES' : null, hint: '55 meters split into 10 equal jumps. 55 ÷ 10 — remember the warm-up!', explain: '55 ÷ 10 = 5.5 meters per second.' }],
+    notes: { say: ['Keep the emphasis on METERS PER SECOND.', 'What does your number mean? Say it as: “___ meters every 1 second.”'], look: ['Anticipated: 10 ÷ 40 = 0.25. Ask what 0.25 means (0.25 SECONDS to travel 1 meter) vs. what we want (meters in 1 second). Draw the double number line.'] } },
+
+  { id: 'a2q3', kind: 'parts', phase: 'Activity 2 · Moving for 10 Seconds', title: 'Your 10-second run', needsData: true,
+    context: 'Use YOUR data from Activity 1.',
+    parts: [{ id: 'ten', kind: 'num', own: 'fast10', unit: 'meters', prompt: 'At your QUICK speed, how far could you travel in 10 seconds?', answer: p => 100 / p.data.fast, rel: 0.08, min: 0.3, misc: (n, p) => near(n, 10 / p.data.fast) ? 'NOT-10X' : near(n, p.data.fast) ? 'INV' : null, hint: 'Find how far you go in 1 second first. At this rate, 10 seconds is 10 times as far.', explain: p => `${fmt(10 / p.data.fast)} meters per second × 10 seconds ≈ ${fmt(100 / p.data.fast)} meters.` }],
+    notes: { say: ['At this rate — say it with me — at THIS rate, how far in 10 seconds?'], look: ['Answer = 10 × their 1-second distance. Watch for scholars who stop at the 1-second distance.'] } },
+
+  { id: 'a2q4', kind: 'parts', phase: 'Activity 2 · Moving for 10 Seconds', title: 'Han’s run', needsData: true,
+    context: 'Han ran <b>100 meters</b> in <b>20 seconds</b> at a constant speed. (Lin: 4 meters per second. Diego: 5.5 meters per second.)',
+    parts: [
+      { id: 'han', kind: 'num', dnl: [100, 20], unit: 'meters per second', prompt: 'How many meters per second did Han run?', answer: 5, misc: n => near(n, 0.2) ? 'INV' : null, hint: '100 meters ÷ 20 seconds = ? meters in 1 second.', explain: '100 ÷ 20 = 5 meters per second.' },
+      { id: 'lin', kind: 'mc', prompt: 'Compared to LIN, Han is…', options: ['faster', 'slower', 'the same speed'], answer: 0, explain: '5 > 4, so Han is faster than Lin.' },
+      { id: 'diego', kind: 'mc', prompt: 'Compared to DIEGO, Han is…', options: ['faster', 'slower', 'the same speed'], answer: 1, mis: { 0: 'DIST-ONLY' }, explain: 'Han ran farther, but he had more time. 5 < 5.5, so Han is slower than Diego.' },
+      { id: 'you', kind: 'mc', prompt: 'Compared to YOU at your quick speed, Han is…', options: ['faster', 'slower', 'the same speed'], answer: p => { const y = 10 / p.data.fast; return Math.abs(5 - y) < 0.05 ? 2 : 5 > y ? 0 : 1; }, explain: p => `You: about ${fmt(10 / p.data.fast)} meters per second. Han: 5 meters per second.` }],
+    notes: { say: ['Han ran the FARTHEST. Is he the fastest? Prove it with meters per second.'], look: ['Scholars who say Han is faster than Diego — they’re judging by distance only.'] } },
+
+  { id: 'dig', kind: 'parts', phase: 'Practice', title: 'Evan vs. Yelena',
+    context: 'Evan ran <b>20 meters in 5.8 seconds</b>. Yelena ran <b>20 meters in 5.4 seconds</b>.',
+    parts: [
+      { id: 'who', kind: 'mc', prompt: 'Who ran faster?', options: ['Evan', 'Yelena', 'Same speed'], answer: 1, mis: { 0: 'TIME-BIGGER' }, explain: 'Yelena ran faster.' },
+      { id: 'why', kind: 'mc', prompt: 'How do you know?', options: ['She went the same distance in LESS time', 'Her time is a smaller number, so she went a shorter distance', 'He took more time, so he went faster', 'They ran different distances'], answer: 0, mis: { 2: 'TIME-BIGGER' }, explain: 'Same distance (20 m) in less time (5.4 s < 5.8 s) means faster.' }],
+    notes: { say: ['Same distance — so what do we compare?'], look: ['“More time = faster” thinking (picking Evan).'] } },
+
+  { id: 'synth', kind: 'parts', phase: 'Wrap-Up · Synthesis', title: 'What does meters per second mean?',
+    parts: [
+      { id: 'mean', kind: 'mc', prompt: 'Meters per second tells…', options: ['how many meters an object goes in ONE second', 'how many seconds it takes to go 1 meter', 'the total distance traveled', 'how long the whole trip took'], answer: 0, mis: { 1: 'INV' }, explain: 'Meters per second is a unit for measuring speed: how many meters an object goes in one second.' },
+      { id: 'link', kind: 'mc', prompt: 'Knowing a speed in meters per second is most like knowing…', options: ['a unit price — dollars per item', 'the total cost of a shopping trip', 'how many items are in the cart'], answer: 0, explain: 'Speed in meters per second gives the same kind of information as unit price in dollars per item: the amount for ONE.' }],
+    notes: { say: ['Which actions from today felt the same as our unit price work in Lesson 8?', 'A person walking 3 meters per second is going faster than a person walking 2 meters per second. Why?'], look: ['Scholars naming “find the amount for ONE” as the shared move.'] } },
+
+  { id: 'cfs', kind: 'cfs', phase: 'Exit Ticket', title: 'What success looks like',
+    student: 'Read the criteria for success. Tap each one when you know you can do it.',
+    items: ['I name which train is faster.', 'I find how many meters per second EACH train travels — or compare how long each takes to go 100 meters.', 'I explain with numbers: “Train ___ is faster because it travels ___ meters per second, which is more than ___ meters per second.”'],
+    notes: { say: ['Read the criteria with me. These are exactly how your exit ticket will be scored.'], look: ['Every scholar taps all three before you launch the exit ticket.'] } },
+
+  { id: 'exit', kind: 'parts', phase: 'Exit Ticket', title: 'Two trains', exit: true,
+    context: 'Two trains are traveling at constant speeds on different tracks.',
+    diagrams: [['Train A', 'trainA'], ['Train B', 'trainB']],
+    parts: [
+      { id: 'a', kind: 'num', unit: 'meters per second', prompt: 'How many meters per second does Train A travel?', answer: 12.5, misc: n => near(n, 0.08) ? 'INV' : null, explain: 'Train A: 12.5 meters in 1 second = 12.5 meters per second (100 m takes 8 seconds).' },
+      { id: 'b', kind: 'num', unit: 'meters per second', prompt: 'How many meters per second does Train B travel?', answer: 25, misc: n => near(n, 0.04) ? 'INV' : null, explain: 'Train B: 100 ÷ 4 = 25 meters per second.' },
+      { id: 'who', kind: 'mc', prompt: 'Which train is traveling faster?', options: ['Train A', 'Train B', 'Same speed'], answer: 1, mis: { 2: 'DIST-ONLY' }, explain: 'Train B — it goes 25 meters per second, and takes only 4 seconds to go 100 meters (Train A takes 8).' },
+      { id: 'why', kind: 'text', prompt: 'Explain your reasoning with numbers.', ph: 'Train ___ is faster because…', explain: 'Train B travels faster because it only took 4 seconds to travel 100 meters, while Train A took 8 seconds. OR: Train B’s speed is 25 meters per second; Train A’s is 12.5.' }],
+    notes: { say: ['Silent and independent. One try per question — show what YOU know.'], look: ['Mastery: names Train B AND justifies with m/s (25 vs 12.5) or time for the same 100 m (4 s vs 8 s).'] } },
+
+  { id: 'podium', kind: 'podium', phase: 'Finish Line', title: 'Grand Prix results',
+    notes: { say: ['Today’s big idea: meters per second tells how far something goes in ONE second — just like unit price tells the cost of ONE.'], look: ['Export the data (CSV) for your tracker.'] } }
+];
+const SIDX = Object.fromEntries(SCREENS.map((s, i) => [s.id, i]));
+const val = (x, p) => typeof x === 'function' ? x(p) : x;
+const gradable = s => (s.parts || []).filter(p => p.kind !== 'poll' && p.kind !== 'text');
+
+function checkPart(part, v, p) {
+  if (part.kind === 'num') {
+    const n = parseNum(v); if (n == null) return null;
+    const ans = val(part.answer, p); if (ans == null || isNaN(ans)) return null;
+    const tol = part.rel ? Math.max(part.min || 0, Math.abs(ans) * part.rel) : 1e-6;
+    const ok = Math.abs(n - ans) <= tol + 1e-9;
+    return { v: n, ok, mis: ok ? null : (part.misc ? part.misc(n, p) : null) };
+  }
+  if (part.kind === 'mc') {
+    const i = parseInt(v, 10); if (!(i >= 0 && i < part.options.length)) return null;
+    const ok = i === val(part.answer, p);
+    return { v: i, ok, mis: ok ? null : (part.mis?.[i] || null) };
+  }
+  if (part.kind === 'multi') {
+    if (!Array.isArray(v)) return null;
+    const set = [...new Set(v.map(Number).filter(i => i >= 0 && i < part.options.length))].sort();
+    if (!set.length) return null;
+    const ok = JSON.stringify(set) === JSON.stringify(part.answer);
+    return { v: set, ok, mis: null };
+  }
+  if (part.kind === 'poll') { const i = parseInt(v, 10); if (!(i >= 0 && i < part.options.length)) return null; return { v: i, ok: null, mis: null }; }
+  if (part.kind === 'text') { const t = String(v || '').trim().slice(0, 400); if (!t) return null; return { v: t, ok: null, mis: null }; }
+  return null;
+}
+const ansLabel = (part, v) => v == null ? '' : part.kind === 'mc' || part.kind === 'poll' ? (part.options[v] ?? '') : part.kind === 'multi' ? v.map(i => String.fromCharCode(65 + i)).join(', ') : String(v);
+
+/* =====================================================================
+   NETWORK
+   ===================================================================== */
+async function hostNet(code, h) {
+  if (NET_MODE === 'local') {
+    const ch = new BroadcastChannel('speedlab-' + code);
+    ch.onmessage = e => { const d = e.data; if (d && d.from && d.msg) h.onMsg(String(d.from).slice(0, 40), d.msg); };
+    setTimeout(h.onOpen, 0);
+    return { send(pid, msg) { ch.postMessage({ to: pid, msg }); }, close() { ch.close(); } };
+  }
+  await loadPeerLib();
+  const conns = new Map();
+  const peer = new Peer(PREFIX + code.toLowerCase(), PEER_OPTS);
+  peer.on('open', () => h.onOpen());
+  peer.on('error', e => h.onError(e));
+  peer.on('disconnected', () => setTimeout(() => { try { if (!peer.destroyed) peer.reconnect(); } catch (_) {} }, 1500));
+  peer.on('connection', conn => {
+    let pid = null;
+    conn.on('data', msg => {
+      if (!msg || typeof msg !== 'object') return;
+      if (msg.t === 'hello' && typeof msg.pid === 'string') {
+        pid = msg.pid.slice(0, 40); const old = conns.get(pid);
+        if (old && old !== conn) try { old.close(); } catch (_) {}
+        conns.set(pid, conn);
+      }
+      if (pid) h.onMsg(pid, msg);
+    });
+    conn.on('close', () => { if (pid && conns.get(pid) === conn) { conns.delete(pid); h.onMsg(pid, { t: 'bye' }); } });
+    conn.on('error', () => {});
+  });
+  return { send(pid, msg) { const c = conns.get(pid); if (c && c.open) try { c.send(msg); } catch (_) {} }, close() { try { peer.destroy(); } catch (_) {} } };
+}
+async function clientNet(code, pid, h) {
+  if (NET_MODE === 'local') {
+    const ch = new BroadcastChannel('speedlab-' + code);
+    ch.onmessage = e => { const d = e.data; if (d && (d.to === pid || d.to === '*')) h.onMsg(d.msg); };
+    const api = { send(msg) { ch.postMessage({ from: pid, msg }); }, close() { ch.close(); } };
+    setTimeout(h.onOpen, 0);
+    return api;
+  }
+  await loadPeerLib();
+  let peer, conn, closed = false, retryT = 0;
+  const later = (fn, ms) => { clearTimeout(retryT); retryT = setTimeout(fn, ms); };
+  function start() {
+    try { peer && peer.destroy(); } catch (_) {}
+    peer = new Peer(undefined, PEER_OPTS);
+    peer.on('open', connect);
+    peer.on('disconnected', () => { try { if (!peer.destroyed) peer.reconnect(); } catch (_) {} });
+    peer.on('error', e => {
+      if (closed) return;
+      if (e.type === 'peer-unavailable') { h.onStatus('noroom'); later(connect, 3000); }
+      else { h.onStatus('offline'); later(start, 4000); }
+    });
+  }
+  function connect() {
+    if (closed) return;
+    if (conn) try { conn.close(); } catch (_) {}
+    h.onStatus('connecting');
+    const c = peer.connect(PREFIX + code.toLowerCase(), { reliable: true, serialization: 'json' });
+    conn = c;
+    const to = setTimeout(() => { if (!c.open && conn === c) { try { c.close(); } catch (_) {} later(connect, 800); } }, 9000);
+    c.on('open', () => { clearTimeout(to); h.onOpen(); });
+    c.on('data', m => h.onMsg(m));
+    c.on('close', () => { if (conn === c && !closed) { h.onStatus('reconnecting'); later(connect, 2000); } });
+    c.on('error', () => {});
+  }
+  start();
+  return { send(m) { if (conn && conn.open) try { conn.send(m); } catch (_) {} }, close() { closed = true; try { peer.destroy(); } catch (_) {} } };
+}
+
+/* =====================================================================
+   HOST (teacher)
+   ===================================================================== */
+let H = null, hnet = null, hostUI = { proj: false, standings: true, confirmKick: null, netState: 'starting' };
+const HKEY = 'speedlab-l9-host';
+function newCode() { const A = 'ABCDEFGHJKLMNPQRSTUVWXYZ'; let s = ''; for (let i = 0; i < 4; i++) s += A[Math.floor(Math.random() * A.length)]; return s; }
+function freshHost() { return { code: newCode(), screen: 0, locked: false, revealed: false, frozen: false, freezeMsg: '', timerEnd: 0, raceStart: 0, players: {}, kicked: {}, created: Date.now(), maxScreen: 0 }; }
+let saveT = 0; function hostSave() { clearTimeout(saveT); saveT = setTimeout(() => store.set(HKEY, H), 400); }
+let bcastT = 0;
+function changed() { hostSave(); clearTimeout(bcastT); bcastT = setTimeout(broadcast, 60); hostRender(); }
+function rosterLite() {
+  return Object.values(H.players).filter(p => p.profile).map(p => ({ pid: p.pid, name: p.name, profile: p.profile, points: p.points, online: p.online, fast: p.data?.fast || null, done: isDone(p) }));
+}
+function isDone(p) {
+  const s = SCREENS[H.screen];
+  if (s.kind === 'parts') { const rec = p.ans[s.id] || {}; return s.parts.filter(x => x.kind !== 'poll').every(x => rec[x.id]?.final); }
+  if (s.kind === 'markup') return !!p.markupAt;
+  if (s.kind === 'data') return !!p.data;
+  if (s.kind === 'info') return !!p.ready[s.id];
+  if (s.kind === 'cfs') return !!p.cfs;
+  if (s.kind === 'lobby') return !!p.profile;
+  return false;
+}
+function viewFor(p, roster) {
+  const now = Date.now(), s = SCREENS[H.screen];
+  return { t: 'view', code: H.code, screen: H.screen, locked: H.locked, revealed: H.revealed, frozen: H.frozen, freezeMsg: H.freezeMsg,
+    timerLeft: H.timerEnd ? Math.max(0, H.timerEnd - now) : 0, raceEl: H.raceStart ? now - H.raceStart : -1,
+    me: { pid: p.pid, name: p.name, profile: p.profile, points: p.points, data: p.data, markup: p.markup || [], markupAt: p.markupAt || 0, ready: !!p.ready[s.id], cfs: p.cfs || [], ans: p.ans[s.id] || {} },
+    roster, online: roster.filter(r => r.online).length };
+}
+function broadcast() {
+  if (!hnet) return; const roster = rosterLite();
+  for (const p of Object.values(H.players)) if (p.online) hnet.send(p.pid, viewFor(p, roster));
+}
+function sendView(pid) { const p = H.players[pid]; if (p && hnet) hnet.send(pid, viewFor(p, rosterLite())); }
+function onHostMsg(pid, m) {
+  if (!m || typeof m !== 'object') return;
+  if (H.kicked[pid]) { if (m.t === 'hello') hnet.send(pid, { t: 'kick' }); return; }
+  let p = H.players[pid];
+  if (m.t === 'hello') {
+    if (!p) p = H.players[pid] = { pid, name: cleanName(m.name), profile: null, points: 0, online: true, lastSeen: Date.now(), ans: {}, data: null, markup: [], markupAt: 0, ready: {}, cfs: [], joined: Date.now() };
+    if (m.name) p.name = cleanName(m.name);
+    const pr = cleanProfile(m.profile); if (pr) p.profile = pr;
+    p.online = true; p.lastSeen = Date.now(); changed(); sendView(pid); return;
+  }
+  if (!p) { hnet.send(pid, { t: 'who' }); return; }
+  p.lastSeen = Date.now();
+  if (m.t === 'bye') { p.online = false; changed(); return; }
+  if (!p.online) { p.online = true; changed(); }
+  const s = SCREENS[H.screen];
+  switch (m.t) {
+    case 'ping': return;
+    case 'profile': { const pr = cleanProfile(m.profile); if (pr) { p.profile = pr; changed(); } return; }
+    case 'answer': {
+      if (s.kind !== 'parts' || m.sid !== s.id || H.locked || H.revealed) return sendView(pid);
+      const part = s.parts.find(x => x.id === m.part); if (!part) return;
+      if (s.needsData && !p.data) return sendView(pid);
+      const rec = p.ans[s.id] = p.ans[s.id] || {};
+      const pr = rec[part.id] = rec[part.id] || { tries: 0 };
+      if (pr.final) return sendView(pid);
+      const res = checkPart(part, m.v, p); if (!res) return sendView(pid);
+      const maxT = (s.exit || part.kind === 'poll' || part.kind === 'text') ? 1 : 2;
+      pr.tries++; pr.v = res.v; pr.ok = res.ok; pr.mis = res.mis; pr.at = Date.now();
+      if (pr.tries === 1) { pr.first = res.v; pr.firstOk = res.ok; pr.firstMis = res.mis; }
+      pr.final = res.ok === true || pr.tries >= maxT || res.ok === null;
+      if (res.ok === true && !s.exit) p.points += pr.tries === 1 ? 100 : 50;
+      changed(); return;
+    }
+    case 'markup': {
+      if (s.kind !== 'markup' || H.locked) return sendView(pid);
+      const marks = Array.isArray(m.marks) ? m.marks.filter(x => typeof x === 'string' && /^s\d+w\d+$/.test(x)).slice(0, 80) : [];
+      if (!p.markupAt && marks.length >= 3) p.points += 50;
+      p.markup = marks; p.markupAt = Date.now(); changed(); return;
+    }
+    case 'data': {
+      const sl = Math.round(+m.slow), fa = Math.round(+m.fast);
+      if (!(sl >= 1 && sl <= 300 && fa >= 1 && fa <= 300 && fa < sl)) return sendView(pid);
+      if (!p.data) p.points += 50;
+      p.data = { slow: sl, fast: fa, sim: !!m.sim }; changed(); return;
+    }
+    case 'ready': if (s.kind === 'info') { p.ready[s.id] = true; changed(); } return;
+    case 'cfs': if (s.kind === 'cfs' && Array.isArray(m.items)) { p.cfs = m.items.map(Number).filter(i => i >= 0 && i < s.items.length); changed(); } return;
+  }
+}
+function goto(i) {
+  i = Math.max(0, Math.min(SCREENS.length - 1, i));
+  H.screen = i; H.maxScreen = Math.max(H.maxScreen || 0, i);
+  H.locked = false; H.revealed = false; H.frozen = false; H.timerEnd = 0; H.raceStart = 0;
+  changed();
+}
+function hostAct(a, arg) {
+  switch (a) {
+    case 'next': return goto(H.screen + 1);
+    case 'back': return goto(H.screen - 1);
+    case 'goto': return goto(+arg);
+    case 'lock': H.locked = !H.locked; return changed();
+    case 'reveal': {
+      H.revealed = !H.revealed; if (H.revealed) H.locked = true;
+      const s = SCREENS[H.screen];
+      if (H.revealed && s.exit) for (const p of Object.values(H.players)) for (const pr of Object.values(p.ans[s.id] || {})) if (pr.ok === true && !pr.awarded) { pr.awarded = true; p.points += 100; }
+      return changed();
+    }
+    case 'freeze': if (H.frozen && H.freezeMsg === arg) { H.frozen = false; } else { H.frozen = true; H.freezeMsg = arg; } return changed();
+    case 'timer': H.timerEnd = +arg ? Date.now() + (+arg) * 1000 : 0; return changed();
+    case 'race': H.raceStart = Date.now(); return changed();
+    case 'proj': hostUI.proj = !hostUI.proj; return hostRender();
+    case 'standings': hostUI.standings = !hostUI.standings; return hostRender();
+    case 'kick': {
+      if (hostUI.confirmKick !== arg) { hostUI.confirmKick = arg; hostRender(); return; }
+      hostUI.confirmKick = null; H.kicked[arg] = 1; hnet && hnet.send(arg, { t: 'kick' }); delete H.players[arg]; return changed();
+    }
+    case 'csv': return exportCSV();
+    case 'newgame': store.del(HKEY); location.reload(); return;
+  }
+}
+function exportCSV() {
+  const cols = ['Scholar', 'Racer', 'Ride', 'Points', 'Slow time (s)', 'Quick time (s)', 'Slow m/s', 'Quick m/s', 'Simulated data', 'Objective words marked'];
+  const partCols = [];
+  for (const s of SCREENS) if (s.kind === 'parts') for (const pt of s.parts) partCols.push([s, pt]);
+  for (const [s, pt] of partCols) { const k = `${s.id}.${pt.id}`; cols.push(`${k} answer`); if (pt.kind !== 'poll' && pt.kind !== 'text') cols.push(`${k} result`, `${k} misconception`); }
+  cols.push('CFS items checked');
+  const rows = [cols];
+  for (const p of Object.values(H.players).sort((a, b) => a.name.localeCompare(b.name))) {
+    const d = p.data;
+    const r = [p.name, ARCH[p.profile?.arch]?.name || '', RIDES[p.profile?.ride]?.n || '', p.points, d?.slow ?? '', d?.fast ?? '', d ? r2(10 / d.slow) : '', d ? r2(10 / d.fast) : '', d ? (d.sim ? 'yes' : 'no') : '', (p.markup || []).length];
+    for (const [s, pt] of partCols) {
+      const pr = p.ans[s.id]?.[pt.id];
+      r.push(pr ? ansLabel(pt, pr.v) : '');
+      if (pt.kind !== 'poll' && pt.kind !== 'text') r.push(!pr ? '' : pr.ok ? (pr.tries === 1 ? 'correct 1st try' : 'correct 2nd try') : pr.final ? 'incorrect' : 'in progress', pr?.firstMis || pr?.mis || '');
+    }
+    r.push((p.cfs || []).length);
+    rows.push(r);
+  }
+  const csv = rows.map(r => r.map(c => { c = String(c ?? ''); return /[",\n]/.test(c) ? '"' + c.replace(/"/g, '""') + '"' : c; }).join(',')).join('\n');
+  const blob = new Blob(['﻿' + csv], { type: 'text/csv' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = `G6M2-L9-ConstantSpeed-${new Date().toISOString().slice(0, 10)}.csv`; document.body.appendChild(a); a.click(); a.remove();
+  toast('CSV downloaded');
+}
+let hrT = 0; function hostRender() { if (hrT) return; hrT = requestAnimationFrame(() => { hrT = 0; drawHost(); }); }
+function joinURL() { const u = new URL(location.href); u.search = ''; u.hash = ''; u.searchParams.set('room', H.code); if (NET_MODE === 'local') u.searchParams.set('net', 'local'); return u.toString(); }
+function timerLeftS() { return H.timerEnd ? Math.max(0, Math.ceil((H.timerEnd - Date.now()) / 1000)) : 0; }
+const mmss = s => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+
+function drawHost() {
+  const s = SCREENS[H.screen], players = Object.values(H.players);
+  const online = players.filter(p => p.online).length;
+  const tl = timerLeftS();
+  const bar = `<div class="bar"><span class="brand">⚡ Speed Lab Grand Prix</span><span class="pill">Room ${H.code}</span>
+    <span class="pill">${online} online · ${players.length} joined</span>${H.timerEnd ? `<span class="pill timer" id="htimer">⏱ ${mmss(tl)}</span>` : ''}
+    ${hostUI.netState !== 'open' ? `<span class="pill warn">${hostUI.netState === 'starting' ? 'Opening room…' : esc(hostUI.netState)}</span>` : ''}
+    <span class="grow"></span>
+    <button class="btn sm ${hostUI.proj ? 'green' : 'alt'}" data-h="proj">${hostUI.proj ? 'Teacher view' : 'Projector view'}</button></div>`;
+  if (hostUI.proj) { $('#app').innerHTML = bar + projView(s) + projCtrl(); if (s.kind === 'lobby') drawQR(); if (s.kind === 'race') startRaceAnim(); return; }
+  const flow = `<nav class="flow" aria-label="Lesson flow">${SCREENS.map((x, i) => `<button data-h="goto" data-a="${i}" class="${i === H.screen ? 'cur' : i < H.screen ? 'done' : ''}"><span class="ph">${esc(x.phase)}</span>${i + 1}. ${esc(x.title)}</button>`).join('')}</nav>`;
+  const ctrl = controls(s);
+  const center = `<div>${ctrl}<div class="card"><span class="tag">${esc(s.phase)} · Screen ${H.screen + 1} of ${SCREENS.length}</span><h2 style="margin:6px 0 10px">${esc(s.title)}</h2>
+      ${hostPreview(s)}</div>${notesBox(s)}</div>`;
+  const right = `<div>${liveData(s, players)}</div>`;
+  $('#app').innerHTML = bar + `<div class="host">${flow}${center}${right}</div>`;
+  if (s.kind === 'lobby') drawQR();
+  if (s.kind === 'race') startRaceAnim();
+}
+function controls(s) {
+  const fz = m => H.frozen && H.freezeMsg === m ? 'on' : '';
+  return `<div class="ctrl">
+    <button class="btn alt" data-h="back" ${H.screen === 0 ? 'disabled' : ''}>◀ Back</button>
+    <button class="btn green" data-h="next" ${H.screen === SCREENS.length - 1 ? 'disabled' : ''}>Next ▶</button>
+    <span style="width:8px"></span>
+    ${s.kind === 'parts' || s.kind === 'markup' ? `<button class="btn ${H.locked ? 'coral on' : 'alt'}" data-h="lock">${H.locked ? '🔓 Unlock' : '✋ Pencils down'}</button>` : ''}
+    ${s.kind === 'parts' || s.kind === 'markup' ? `<button class="btn ${H.revealed ? 'purple on' : 'purple'}" data-h="reveal">${H.revealed ? 'Hide answers' : '💡 Reveal'}</button>` : ''}
+    ${s.kind === 'race' ? `<button class="btn pink" data-h="race">🏁 ${H.raceStart ? 'Restart race' : 'Start race'}</button>` : ''}
+    <button class="btn blue ${fz('eyes')}" data-h="freeze" data-a="eyes">👀 Eyes on me</button>
+    <button class="btn blue ${fz('talk')}" data-h="freeze" data-a="talk">💬 Turn &amp; talk</button>
+    <span class="row" style="gap:4px">⏱ ${[30, 60, 120, 180].map(t => `<button class="btn sm alt" data-h="timer" data-a="${t}">${t < 60 ? t + 's' : t / 60 + 'm'}</button>`).join('')}${H.timerEnd ? `<button class="btn sm coral" data-h="timer" data-a="0">✕</button>` : ''}</span>
+  </div>`;
+}
+function notesBox(s) {
+  const n = s.notes || {};
+  return `<div class="notes"><b>Say</b><ul>${(n.say || []).map(x => `<li>${esc(x)}</li>`).join('')}</ul><b>Look for</b><ul>${(n.look || []).map(x => `<li>${esc(x)}</li>`).join('')}</ul></div>`;
+}
+function ctxBlock(s, big) {
+  let h = '';
+  if (s.context) h += `<div class="ctx">${s.context}</div>`;
+  if (s.diagrams) h += s.diagrams.map(([n, f]) => `<div style="margin-top:10px"><b>${n}</b>${f === 'trainA' ? trainA() : trainB()}</div>`).join('');
+  return h;
+}
+function hostPreview(s) {
+  if (s.kind === 'lobby') return `<div class="row" style="gap:24px;align-items:center"><div id="qr" style="width:180px;height:180px"></div><div><div class="muted">Scholars go to</div><div style="font-weight:700;word-break:break-all;margin:4px 0 10px">${esc(joinURL())}</div><div class="muted">Room code</div><div class="code-big">${H.code}</div></div></div>`;
+  if (s.kind === 'markup') return heatMap(s);
+  if (s.kind === 'info') return `<p>${esc(s.student)}</p><ol>${s.steps.map(x => `<li style="margin:6px 0">${esc(x)}</li>`).join('')}</ol><p class="muted">💡 ${esc(s.tip)}</p>`;
+  if (s.kind === 'data') return `<p>${esc(s.student)}</p>`;
+  if (s.kind === 'cfs') return `<ol>${s.items.map(x => `<li style="margin:6px 0">${esc(x)}</li>`).join('')}</ol>`;
+  if (s.kind === 'race') return raceTrack(true);
+  if (s.kind === 'podium') return podiumHTML();
+  if (s.kind === 'parts') return ctxBlock(s) + s.parts.map(pt => `<div class="part"><h3>${esc(pt.prompt)}</h3>${pt.dnl ? fixedDNL(pt.dnl[0], pt.dnl[1], H.revealed ? pt.answer : null) : ''}${pt.options ? `<ol type="A" style="margin:0">${pt.options.map((o, i) => `<li ${H.revealed && pt.answer === i || (Array.isArray(pt.answer) && pt.answer.includes(i) && H.revealed) ? 'style="color:var(--ok);font-weight:700"' : ''}>${esc(o)}</li>`).join('')}</ol>` : ''}
+      <div class="small muted">Answer: ${typeof pt.answer === 'function' ? 'depends on each scholar’s data' : pt.kind === 'mc' ? esc(pt.options[pt.answer]) : pt.kind === 'multi' ? pt.answer.map(i => String.fromCharCode(65 + i)).join(' + ') : pt.answer ?? '(open response)'}${pt.explain && typeof pt.explain === 'string' ? ' — ' + esc(pt.explain) : ''}</div></div>`).join('');
+  return '';
+}
+function heatMap(s) {
+  const counts = {}; const ps = Object.values(H.players);
+  for (const p of ps) for (const m of p.markup || []) counts[m] = (counts[m] || 0) + 1;
+  const max = Math.max(1, ...Object.values(counts));
+  return `<div class="mk heat">${s.sentences.map((sen, si) => `<div>${sen.split(' ').map((w, wi) => { const c = counts[`s${si}w${wi}`] || 0; return `<span class="w" title="${c} marked" style="background:rgba(255,221,79,${(c / max).toFixed(2)})">${esc(w)}</span>`; }).join(' ')}</div>`).join('')}</div><div class="small muted">Darker = more scholars marked it.</div>`;
+}
+function liveData(s, players) {
+  const named = players.slice().sort((a, b) => a.name.localeCompare(b.name));
+  const doneN = named.filter(isDone).length;
+  let h = `<div class="card"><div class="stat"><span class="n">${doneN}/${named.length}</span><span class="muted">${s.kind === 'lobby' ? 'racers built' : s.kind === 'race' ? 'with speed data' : 'finished this screen'}</span></div>`;
+  if (s.kind === 'parts') h += partStats(s, named);
+  if (s.kind === 'data' || s.kind === 'race') h += `<table class="ros"><tr><th>Scholar</th><th>Slow</th><th>Quick</th><th>m/s</th></tr>${named.map(p => `<tr><td><span class="dot ${p.online ? 'on' : ''}"></span>${esc(p.name)}</td><td>${p.data ? p.data.slow + 's' : '—'}</td><td>${p.data ? p.data.fast + 's' : '—'}</td><td>${p.data ? fmt(10 / p.data.fast) + (p.data.sim ? ' 🤖' : '') : ''}</td></tr>`).join('')}</table><div class="small muted">🤖 = Time Trial (simulated) data</div>`;
+  h += '</div>';
+  h += `<div class="card"><h3 style="font-size:18px;margin-bottom:8px">Roster</h3><table class="ros"><tr><th>Scholar</th>${s.kind === 'parts' ? s.parts.map(pt => `<th class="c">${esc(pt.id)}</th>`).join('') : '<th>Status</th>'}<th>⚡</th><th></th></tr>`;
+  for (const p of named) {
+    h += `<tr><td style="white-space:nowrap"><span class="dot ${p.online ? 'on' : ''}"></span>${avatar(p.profile, 24)} ${esc(p.name)}</td>`;
+    if (s.kind === 'parts') { const rec = p.ans[s.id] || {}; h += s.parts.map(pt => `<td class="c">${cellChip(pt, rec[pt.id])}</td>`).join(''); }
+    else h += `<td>${isDone(p) ? '<span class="chip ok">done</span>' : '<span class="chip">…</span>'}</td>`;
+    h += `<td>${p.points}</td><td><button class="btn sm alt" style="min-height:28px;padding:2px 8px" data-h="kick" data-a="${esc(p.pid)}">${hostUI.confirmKick === p.pid ? 'Remove?' : '✕'}</button></td></tr>`;
+  }
+  h += `</table></div><div class="row"><button class="btn sm alt" data-h="csv">⬇ Export CSV</button><button class="btn sm alt" data-h="newgame">New game</button></div>`;
+  return h;
+}
+function cellChip(pt, pr) {
+  if (!pr) return '<span class="chip">·</span>';
+  if (pt.kind === 'poll') return `<span class="chip">${String.fromCharCode(65 + pr.v)}</span>`;
+  if (pt.kind === 'text') return '<span class="chip ok">✎</span>';
+  if (pr.ok) return `<span class="chip ok">✓${pr.tries > 1 ? '²' : ''}</span>`;
+  const mis = pr.mis || pr.firstMis;
+  if (!pr.final) return `<span class="chip mid" title="${esc(MIS[mis]?.t || 'retrying')}">${mis ? '⚑' : '↺'}</span>`;
+  return `<span class="chip bad" title="${esc(MIS[mis]?.t || '')}">✗${mis ? '⚑' : ''}</span>`;
+}
+function partStats(s, ps) {
+  let h = '';
+  for (const pt of s.parts) {
+    const recs = ps.map(p => [p, p.ans[s.id]?.[pt.id]]).filter(x => x[1]);
+    h += `<div class="part"><b>${esc(pt.prompt)}</b><div class="small muted">${recs.length} answered${pt.kind !== 'poll' && pt.kind !== 'text' ? ` · ${recs.filter(x => x[1].firstOk).length} right on 1st try · ${recs.filter(x => x[1].ok).length} right overall` : ''}</div>`;
+    if (pt.kind === 'text') { h += recs.map(([p, r]) => `<div class="small" style="margin:4px 0"><b>${esc(p.name)}:</b> ${esc(r.v)}</div>`).join(''); h += '</div>'; continue; }
+    const dist = {};
+    for (const [, r] of recs) { const k = ansLabel(pt, r.first ?? r.v); dist[k] = (dist[k] || 0) + 1; }
+    const max = Math.max(1, ...Object.values(dist));
+    const right = pt.kind === 'num' && typeof pt.answer !== 'function' ? String(pt.answer) : pt.kind === 'mc' && typeof pt.answer !== 'function' ? pt.options[pt.answer] : pt.kind === 'multi' ? ansLabel(pt, pt.answer) : null;
+    if (typeof pt.answer !== 'function') h += `<div class="bars">${Object.entries(dist).sort((a, b) => b[1] - a[1]).slice(0, 6).map(([k, c]) => `<div class="b"><span class="t" title="${esc(k)}">${esc(k)}</span><span class="f ${pt.kind === 'poll' ? '' : k === right ? 'c' : 'm'}" style="width:${Math.round(c / max * 150)}px"></span><span>${c}</span></div>`).join('')}</div>`;
+    const mis = {};
+    for (const [p, r] of recs) { const m = r.firstMis || r.mis; if (m) (mis[m] = mis[m] || []).push(p.name); }
+    for (const [m, names] of Object.entries(mis)) h += `<div class="fb bad small" style="margin-top:6px">⚑ ${esc(MIS[m]?.t || m)} (${names.length}): ${names.map(esc).join(', ')}</div>`;
+    h += '</div>';
+  }
+  return h;
+}
+function projView(s) {
+  let body = '';
+  if (s.kind === 'lobby') body = `<div class="row" style="gap:40px;align-items:center"><div id="qr" style="width:240px;height:240px"></div><div><div style="font-size:24px">Go to <b>${esc(joinURL().replace(/^https?:\/\//, '').split('?')[0])}</b></div><div style="font-size:22px;margin-top:10px">Room code</div><div class="code-big" style="font-size:96px">${H.code}</div></div></div>`;
+  else if (s.kind === 'parts') body = (s.projBig ? `<div style="font-family:Aleo,serif;font-weight:800;font-size:120px;color:var(--navy);text-align:center;margin:20px 0">${esc(s.projBig)}</div>` : ctxBlock(s)) + (s.projBig ? (H.revealed ? `<div class="fb reveal" style="font-size:26px">${esc(s.parts[0].explain)}</div>` : '') : s.parts.map((pt, i) => `<div class="part" style="font-size:24px"><b>${i + 1}. ${esc(pt.prompt)}</b>${pt.dnl ? fixedDNL(pt.dnl[0], pt.dnl[1], H.revealed ? pt.answer : null) : ''}${pt.options && pt.kind !== 'poll' ? `<div style="font-size:20px;margin-top:6px">${pt.options.map((o, j) => `<span style="margin-right:20px;${H.revealed && (pt.answer === j || (Array.isArray(pt.answer) && pt.answer.includes(j))) ? 'color:var(--ok);font-weight:800' : ''}">${String.fromCharCode(65 + j)}. ${esc(o)}</span>`).join('')}</div>` : ''}${H.revealed && typeof pt.explain === 'string' ? `<div class="fb reveal">${esc(pt.explain)}</div>` : ''}</div>`).join(''));
+  else if (s.kind === 'markup') body = heatMap(s);
+  else if (s.kind === 'info') body = `<ol style="font-size:24px;line-height:1.5">${s.steps.map(x => `<li>${esc(x)}</li>`).join('')}</ol>`;
+  else if (s.kind === 'cfs') body = `<div class="ctx"><b>Criteria for success</b><ol>${s.items.map(x => `<li>${esc(x)}</li>`).join('')}</ol></div>`;
+  else if (s.kind === 'race') body = raceTrack(true);
+  else if (s.kind === 'podium') body = podiumHTML();
+  else if (s.kind === 'data') body = `<p style="font-size:26px">${esc(s.student)}</p>`;
+  const ps = Object.values(H.players).filter(p => p.profile);
+  const fin = ps.filter(isDone).length;
+  const showTrack = hostUI.standings && !['race', 'podium', 'lobby'].includes(s.kind);
+  const lobbyAv = s.kind === 'lobby' ? `<div class="row" style="margin-top:20px;gap:14px">${ps.map(p => `<div class="center">${avatar(p.profile, 64)}<div style="font-weight:700">${esc(p.name)}</div></div>`).join('')}</div>` : '';
+  return `<div class="proj"><span class="tag" style="font-size:18px">${esc(s.phase)}</span><h1>${esc(s.title)}</h1><div style="margin-top:16px">${body}</div>${lobbyAv}
+    ${s.kind !== 'lobby' && s.kind !== 'podium' && s.kind !== 'race' ? `<div class="stat" style="margin-top:18px"><span class="n">${fin}/${ps.length}</span><span class="muted" style="font-size:20px">finished</span></div>` : ''}
+    ${showTrack ? `<h3 style="margin:18px 0 8px">Grand Prix standings</h3>${standingsTrack(ps)}` : ''}</div>`;
+}
+function projCtrl() {
+  const s = SCREENS[H.screen];
+  return `<div class="proj-ctrl"><button class="btn sm alt" data-h="back">◀</button>${s.kind === 'parts' ? `<button class="btn sm ${H.locked ? 'coral' : 'alt'}" data-h="lock">✋</button><button class="btn sm purple" data-h="reveal">💡</button>` : ''}${s.kind === 'race' ? '<button class="btn sm pink" data-h="race">🏁</button>' : ''}<button class="btn sm blue" data-h="freeze" data-a="eyes">👀</button><button class="btn sm alt" data-h="standings">🏆</button><button class="btn sm green" data-h="next">▶</button></div>`;
+}
+function standingsTrack(ps) {
+  const max = Math.max(300, ...ps.map(p => p.points));
+  return `<div class="track"><div class="finish"></div>${ps.sort((a, b) => b.points - a.points).map(p => `<div class="lane" style="height:40px"><div class="runner" style="left:calc(${(p.points / max * 82).toFixed(1)}%)">${avatar(p.profile, 32)}<span class="nm">${esc(p.name)} ${isDone(p) ? '✅' : ''}</span><span class="dist">${p.points}</span></div></div>`).join('')}</div>`;
+}
+function podiumHTML() {
+  const ps = Object.values(H.players).filter(p => p.profile).sort((a, b) => b.points - a.points);
+  const top = [ps[1], ps[0], ps[2]], hts = [110, 150, 80], pl = ['2', '1', '3'];
+  const withData = ps.filter(p => p.data); const avg = withData.length ? withData.reduce((a, p) => a + 10 / p.data.fast, 0) / withData.length : null;
+  const fastest = withData.sort((a, b) => a.data.fast - b.data.fast)[0];
+  const exitWho = ps.filter(p => p.ans.exit?.who); const exitOk = exitWho.filter(p => p.ans.exit.who.ok).length;
+  return `<div class="podium">${top.map((p, i) => p ? `<div class="p">${avatar(p.profile, 72)}<div style="font-weight:800;margin:6px 0">${esc(p.name)}</div><div class="small muted">${p.points} ⚡</div><div class="blk" style="height:${hts[i]}px">${pl[i]}</div></div>` : '').join('')}</div>
+   <div class="row" style="gap:24px;justify-content:center">
+     <div class="center"><div class="stat" style="justify-content:center"><span class="n">${avg ? fmt(avg) : '—'}</span></div><div class="muted small">class average quick speed (m/s)</div></div>
+     <div class="center"><div class="stat" style="justify-content:center"><span class="n">${fastest ? esc(fastest.name) : '—'}</span></div><div class="muted small">fastest racer ${fastest ? `(${fmt(10 / fastest.data.fast)} m/s)` : ''}</div></div>
+     <div class="center"><div class="stat" style="justify-content:center"><span class="n">${exitWho.length ? Math.round(exitOk / exitWho.length * 100) + '%' : '—'}</span></div><div class="muted small">exit ticket: picked Train B</div></div>
+   </div>`;
+}
+function raceTrack(host, me) {
+  const ps = host ? Object.values(H.players).filter(p => p.profile && p.data) : null;
+  const list = host ? ps.map(p => ({ pid: p.pid, name: p.name, profile: p.profile, v: 10 / p.data.fast })) : me;
+  if (!list.length) return '<p class="muted">No speed data yet — scholars enter times on the “Record your times” screen.</p>';
+  const maxD = Math.max(...list.map(r => r.v * 10)) * 1.05;
+  const step = maxD > 120 ? 20 : 10;
+  let ticks = ''; for (let d = 0; d <= maxD; d += step) ticks += `<span style="left:calc(${(d / maxD * 100 * 0.86).toFixed(2)}% + 12px)">${d} m</span>`;
+  return `<div class="ticks">${ticks}</div><div class="track" id="raceTrack" data-max="${maxD}">${list.sort((a, b) => b.v - a.v).map(r => `<div class="lane"><div class="runner live" data-v="${r.v}" style="left:0">${avatar(r.profile, 34)}<span class="nm">${esc(r.name)}</span><span class="dist">0 m</span></div></div>`).join('')}</div>
+   <div class="small muted" style="margin-top:6px">Each racer moves at a constant speed: their quick speed in meters per second.</div>`;
+}
+let raceRAF = 0;
+function startRaceAnim(getEl) {
+  cancelAnimationFrame(raceRAF);
+  const tick = () => {
+    const tr = document.getElementById('raceTrack'); if (!tr) return;
+    const el = IS_HOST ? (H.raceStart ? Date.now() - H.raceStart : -1) : raceElNow();
+    const t = el < 0 ? 0 : Math.min(10, el / 1000);
+    const maxD = +tr.dataset.max;
+    tr.querySelectorAll('.runner').forEach(r => { const v = +r.dataset.v, d = v * t; r.style.left = `${(d / maxD * 86).toFixed(2)}%`; r.querySelector('.dist').textContent = `${fmt(d)} m${t >= 10 ? ` · ${fmt(v)} m/s` : ''}`; });
+    const clk = document.getElementById('raceClock'); if (clk) clk.textContent = `${t.toFixed(1)} s`;
+    if (!IS_HOST) updateLiveDNL(t);
+    if (el >= 0 && t < 10) raceRAF = requestAnimationFrame(tick);
+  };
+  raceRAF = requestAnimationFrame(tick);
+}
+function drawQR() {
+  const el = $('#qr'); if (!el) return;
+  const go = () => { try { const q = qrcode(0, 'M'); q.addData(joinURL()); q.make(); el.innerHTML = q.createSvgTag({ cellSize: 5, margin: 2, scalable: true }); } catch (_) {} };
+  if (window.qrcode) go(); else loadScript('https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js').then(go).catch(() => {});
+}
+async function startHost(resume) {
+  H = resume || freshHost();
+  for (const p of Object.values(H.players)) p.online = false;
+  hostSave(); hostRender();
+  let tries = 0;
+  const open = async () => {
+    try { hnet && hnet.close(); } catch (_) {}
+    hostUI.netState = 'starting'; hostRender();
+    try {
+      hnet = await hostNet(H.code, {
+        onMsg: onHostMsg,
+        onOpen: () => { hostUI.netState = 'open'; hostRender(); broadcast(); },
+        onError: e => {
+          if (e.type === 'unavailable-id') {
+            tries++;
+            if (!resume || tries > 8) { H.code = newCode(); hostSave(); }
+            hostUI.netState = 'Room busy — retrying…'; hostRender(); setTimeout(open, resume ? 4000 : 300);
+          } else if (['network', 'server-error', 'socket-error', 'socket-closed', 'browser-incompatible'].includes(e.type)) {
+            hostUI.netState = 'Connection problem — retrying…'; hostRender(); setTimeout(open, 4000);
+          }
+        }
+      });
+    } catch (err) { hostUI.netState = 'Couldn’t load connection library — check internet'; hostRender(); setTimeout(open, 5000); }
+  };
+  open();
+  setInterval(() => {
+    const now = Date.now(); let ch = false;
+    for (const p of Object.values(H.players)) { const on = now - (p.lastSeen || 0) < 13000; if (p.online && !on) { p.online = false; ch = true; } }
+    if (ch) changed();
+    const ht = document.getElementById('htimer'); if (ht) ht.textContent = '⏱ ' + mmss(timerLeftS());
+    if (H.timerEnd && H.timerEnd < now - 1500) { H.timerEnd = 0; changed(); }
+  }, 1000);
+  setInterval(broadcast, 15000); // keep late joiners and clocks in sync
+}
+function hostStartScreen() {
+  const saved = store.get(HKEY);
+  if (saved && saved.code && Date.now() - (saved.created || 0) < 14 * 3600e3 && Object.keys(saved.players || {}).length) {
+    $('#app').innerHTML = `<div class="bar"><span class="brand">⚡ Speed Lab Grand Prix · Teacher</span></div><div class="wrap"><div class="card center"><h1>Welcome back, ${TEACHER}</h1>
+      <p class="muted">You have a game in progress: room <b>${esc(saved.code)}</b> with ${Object.keys(saved.players).length} scholars, on screen ${saved.screen + 1}.</p>
+      <div class="row" style="justify-content:center"><button class="btn green" id="resume">Resume room ${esc(saved.code)}</button><button class="btn alt" id="fresh">Start a new game</button></div></div></div>`;
+    $('#resume').onclick = () => startHost(saved);
+    $('#fresh').onclick = () => { store.del(HKEY); startHost(null); };
+  } else startHost(null);
+}
+
+/* =====================================================================
+   SCHOLAR
+   ===================================================================== */
+const SKEY = 'speedlab-l9-scholar' + (PARAMS.get('slot') || '');
+let S = store.get(SKEY) || {}; // {pid, code, name, profile, builder}
+let V = null, cnet = null, cstatus = 'idle', drafts = {}, lastKey = '', viewAt = 0, mkLocal = null, simRun = null;
+function sSave() { store.set(SKEY, S); }
+function scholarStart() {
+  const room = (PARAMS.get('room') || '').toUpperCase().replace(/[^A-Z]/g, '').slice(0, 4);
+  if (S.pid && S.code && S.name && (!room || room === S.code)) return connectScholar();
+  drawJoin(room || S.code || '');
+}
+function drawJoin(room, err) {
+  $('#app').innerHTML = `<div class="bar"><span class="brand">⚡ Speed Lab Grand Prix</span></div>
+   <div class="wrap" style="max-width:520px"><div class="card center">
+     <div style="font-size:54px">🏁</div><h1>Join the race</h1><p class="muted">G6 Mission 2 · Lesson 9 · Constant Speed</p>
+     ${err ? `<div class="status">${esc(err)}</div>` : ''}
+     <label class="small muted" for="jc">Room code</label><input id="jc" class="field code-in" maxlength="4" autocomplete="off" value="${esc(room)}" placeholder="ABCD">
+     <div style="height:12px"></div>
+     <label class="small muted" for="jn">First name + last initial</label><input id="jn" class="field" maxlength="16" autocomplete="off" value="${esc(S.name || '')}" placeholder="Jordan M">
+     <div style="height:16px"></div><button class="btn green" style="width:100%" id="jgo">Join ▶</button>
+   </div><p class="center small muted"><a href="?host${NET_MODE === 'local' ? '&net=local' : ''}" style="color:var(--muted)">Teacher: host a game</a></p></div>`;
+  const go = () => {
+    const c = $('#jc').value.toUpperCase().replace(/[^A-Z]/g, ''), n = cleanName($('#jn').value);
+    if (c.length !== 4) return drawJoin(c, 'Type the 4-letter room code from the board.');
+    if (!$('#jn').value.trim()) return drawJoin(c, 'Type your first name and last initial.');
+    if (S.code !== c) { S = { pid: S.pid || uid(), code: c, name: n, profile: S.profile || null, builder: S.builder || null }; } else { S.name = n; S.pid = S.pid || uid(); }
+    sSave(); connectScholar();
+  };
+  $('#jgo').onclick = go; $('#jn').onkeydown = e => { if (e.key === 'Enter') go(); };
+  $('#jc').oninput = e => { e.target.value = e.target.value.toUpperCase().replace(/[^A-Z]/g, ''); };
+}
+const hello = () => ({ t: 'hello', pid: S.pid, name: S.name, profile: S.profile });
+async function connectScholar() {
+  cstatus = 'connecting'; drawScholar(true);
+  try {
+    cnet = await clientNet(S.code, S.pid, {
+      onOpen: () => { cnet.send(hello()); },
+      onStatus: st => { cstatus = st; if (!V) drawScholar(true); else updateStatusLine(); },
+      onMsg: m => {
+        if (!m || typeof m !== 'object') return;
+        if (m.t === 'view') { if (V && m.screen !== V.screen) { mkLocal = null; lastLiveSec = -1; } const first = !V; V = m; viewAt = performance.now(); cstatus = 'ok'; if (first) lastKey = ''; drawScholar(); }
+        else if (m.t === 'who') cnet.send(hello());
+        else if (m.t === 'kick') { cnet.close(); S = { name: S.name }; sSave(); V = null; drawJoin('', 'Your teacher removed you from this room. Ask before rejoining.'); }
+      }
+    });
+    if (NET_MODE === 'local') cnet.send(hello());
+  } catch (e) { cstatus = 'offline'; drawScholar(true); setTimeout(connectScholar, 5000); }
+  if (!window.__sl) { window.__sl = 1; setInterval(() => { if (cnet) cnet.send({ t: 'ping' }); }, 4000); setInterval(tickScholar, 500); }
+  // If no answer in local mode, keep saying hello
+  const helloLoop = setInterval(() => { if (V) return clearInterval(helloLoop); cnet && cnet.send(hello()); }, 2500);
+}
+function statusText() {
+  return { connecting: `Connecting to room ${S.code}…`, reconnecting: 'Reconnecting…', noroom: `Room ${S.code} isn’t open yet. Check the code on the board — we’ll keep trying.`, offline: 'Connection problem — retrying…' }[cstatus] || '';
+}
+function updateStatusLine() { const el = $('#cstat'); if (el) { const t = cstatus === 'ok' ? '' : statusText(); el.textContent = t; el.classList.toggle('hide', !t); } }
+function timerLeftClient() { if (!V || !V.timerLeft) return 0; return Math.max(0, Math.ceil((V.timerLeft - (performance.now() - viewAt)) / 1000)); }
+function raceElNow() { if (!V || V.raceEl < 0) return -1; return V.raceEl + (performance.now() - viewAt); }
+function tickScholar() {
+  const el = $('#stimer'); if (el) { const t = timerLeftClient(); el.textContent = '⏱ ' + mmss(t); el.classList.toggle('hide', !t); }
+}
+function sbar() {
+  const me = V?.me;
+  return `<div class="bar">${me?.profile ? avatar(me.profile, 34) : ''}<span class="brand">${esc(S.name || '')}</span><span class="grow"></span>
+    <span class="pill timer hide" id="stimer"></span>${me ? `<span class="pill" id="spts">⚡ ${me.points}</span>` : ''}<span class="pill">Room ${esc(S.code || '')}</span></div>`;
+}
+function drawScholar(force) {
+  // freeze overlay is independent of the main render
+  const ov = $('#overlay');
+  if (V && V.frozen) {
+    const msg = V.freezeMsg === 'talk' ? ['💬', 'Turn & talk', 'Share your thinking with your partner.'] : ['👀', `Eyes on ${TEACHER}`, 'Hands off your device.'];
+    ov.innerHTML = `<div class="freeze"><div class="eyes">${msg[0]}</div><h1>${msg[1]}</h1><p style="font-size:20px;opacity:.85">${msg[2]}</p></div>`;
+  } else ov.innerHTML = '';
+  if (!V) {
+    $('#app').innerHTML = sbar() + `<div class="wrap"><div class="card center"><div style="font-size:48px">📡</div><h2>${esc(statusText() || 'Connecting…')}</h2>
+      <p class="muted">Joining as <b>${esc(S.name || '')}</b>.</p><button class="btn alt sm" id="chg">Change name or room</button></div></div>`;
+    $('#chg').onclick = () => { try { cnet && cnet.close(); } catch (_) {} const c = S.code; S = { name: S.name, profile: S.profile, builder: S.builder }; sSave(); location.href = location.pathname + (NET_MODE === 'local' ? '?net=local' : ''); };
+    return;
+  }
+  const s = SCREENS[V.screen] || SCREENS[0];
+  const needBuilder = !V.me.profile;
+  const key = JSON.stringify([V.screen, V.locked, V.revealed, V.me.ans, V.me.data, V.me.profile, V.me.points, V.me.markupAt, V.me.ready, V.me.cfs, needBuilder ? S.builder : 0,
+    ['lobby', 'podium'].includes(s.kind) ? V.roster.map(r => r.pid + (r.profile?.arch || '')) : 0, s.kind === 'race' ? (V.raceEl >= 0 ? Math.floor((Date.now() - V.raceEl) / 2000) : -1) : 0]);
+  if (!force && key === lastKey) { tickScholar(); return; }
+  lastKey = key;
+  // keep typed drafts
+  document.querySelectorAll('[data-draft]').forEach(i => { if (!i.disabled) drafts[i.dataset.draft] = i.value; });
+  let body;
+  if (needBuilder) body = builderHTML();
+  else body = screenHTML(s);
+  $('#app').innerHTML = sbar() + `<div class="wrap"><div id="cstat" class="status hide"></div>${body}</div>`;
+  document.querySelectorAll('[data-draft]').forEach(i => { const d = drafts[i.dataset.draft]; if (!i.disabled && d != null && d !== '') i.value = d; });
+  updateStatusLine(); tickScholar();
+  if (s.kind === 'race' && !needBuilder) startRaceAnim();
+}
+function lockBanner() { return V.revealed ? '<div class="banner rev">💡 Answers revealed — check your thinking.</div>' : V.locked ? '<div class="banner lock">✋ Pencils down — answers are locked.</div>' : ''; }
+function screenHTML(s) {
+  const head = `<span class="tag">${esc(s.phase)}</span><h1 style="margin:4px 0 6px">${esc(s.title)}</h1>`;
+  const me = V.me;
+  if (s.kind === 'lobby') {
+    const a = ARCH[me.profile.arch];
+    return `<div class="card center">${avatar(me.profile, 110)}<h1 style="margin-top:12px">${esc(a.name)}</h1><p class="muted">${esc(a.d)}</p><p style="font-weight:700;font-size:20px">“${esc(me.profile.phrase)}”</p>
+      <button class="btn alt sm" data-s="rebuild">Change my racer</button></div>
+      <div class="card"><b>On the starting line (${V.roster.length})</b><div class="row" style="margin-top:10px;gap:12px">${V.roster.map(r => `<div class="center" style="width:74px">${avatar(r.profile, 48)}<div class="small" style="font-weight:600">${esc(r.name)}</div></div>`).join('')}</div>
+      <p class="muted small">Waiting for ${TEACHER} to start…</p></div>`;
+  }
+  if (s.kind === 'markup') {
+    if (!mkLocal) mkLocal = new Set(me.markup || []);
+    const dis = V.locked || V.revealed;
+    return `<div class="card">${head}<p>${esc(s.student)}</p>${lockBanner()}<div class="mk">${s.sentences.map((sen, si) => `<div>${sen.split(' ').map((w, wi) => { const id = `s${si}w${wi}`; const k = V.revealed && s.keys.includes(w.toLowerCase().replace(/[^a-z]/g, '')); return `<span class="w ${mkLocal.has(id) ? 'on' : ''} ${k ? 'key' : ''}" data-mk="${id}">${esc(w)}</span>`; }).join(' ')}</div>`).join('')}</div>
+      <div class="row"><button class="btn green" data-s="mksend" ${dis ? 'disabled' : ''}>${me.markupAt ? 'Update my markup' : 'Submit my markup'}</button><span class="muted" id="mkcount">${mkLocal.size} marked</span>${me.markupAt ? '<span class="chip ok">Submitted ✓</span>' : ''}</div>
+      ${V.revealed ? '<div class="fb reveal">Underlined words are the key ideas: ratios, how fast, double number line diagrams, constant speed, faster, distances, amounts of time.</div>' : ''}</div>`;
+  }
+  if (s.kind === 'info') return `<div class="card">${head}<p style="font-size:18px">${esc(s.student)}</p><ol style="font-size:17px;line-height:1.55">${s.steps.map(x => `<li style="margin:8px 0">${esc(x)}</li>`).join('')}</ol>
+      <div class="ctx" style="font-size:16px">💡 ${esc(s.tip)}</div><div style="margin-top:14px">${me.ready ? '<span class="chip ok">Ready ✓</span>' : '<button class="btn green" data-s="ready">We know our roles ✓</button>'}</div></div>`;
+  if (s.kind === 'data') return `<div class="card">${head}<p>${esc(s.student)}</p>${dataForm()}</div>`;
+  if (s.kind === 'cfs') {
+    const on = new Set(me.cfs || []);
+    return `<div class="card">${head}<p>${esc(s.student)}</p>${s.items.map((x, i) => `<button class="choice ${on.has(i) ? 'on' : ''}" style="width:100%;margin:8px 0" data-cfs="${i}"><span class="big">${on.has(i) ? '✅' : '⬜'}</span><span>${esc(x)}</span></button>`).join('')}
+      ${on.size === s.items.length ? '<div class="fb ok">You know what success looks like. Get ready!</div>' : ''}</div>`;
+  }
+  if (s.kind === 'race') {
+    if (!me.data) return `<div class="card">${head}<p>You need your speed data to race!</p>${dataForm()}</div>`;
+    const v = 10 / me.data.fast;
+    return `<div class="card">${head}<p>${esc(s.student)}</p><div class="row"><span class="chip ok" style="font-size:15px">Your quick speed: ${fmt(v)} meters per second</span><span class="grow"></span><b id="raceClock" style="font-size:22px">0.0 s</b></div>
+      <div style="margin-top:12px">${raceTrack(false, [{ pid: me.pid, name: me.name, profile: me.profile, v }])}</div>
+      <h3 style="margin:16px 0 4px;font-size:18px">Your live double number line</h3><div id="liveDNL" data-v="${v}">${liveDNL(v, V.raceEl >= 0 ? Math.min(10, raceElNow() / 1000) : 0)}</div>
+      <p class="muted">${V.raceEl < 0 ? `Waiting for ${TEACHER} to start the race…` : 'Same distance added every single second = constant speed.'}</p></div>`;
+  }
+  if (s.kind === 'podium') {
+    const sorted = [...V.roster].sort((a, b) => b.points - a.points); const rank = sorted.findIndex(r => r.pid === me.pid) + 1;
+    return `<div class="card center">${avatar(me.profile, 110)}<h1 style="margin-top:12px">Finish line!</h1><p style="font-size:20px">You finished <b>#${rank}</b> of ${sorted.length} with <b>${me.points} ⚡</b></p>
+      ${me.data ? `<p>Your quick speed: <b>${fmt(10 / me.data.fast)} meters per second</b>.</p>` : ''}<div class="ctx" style="text-align:left"><b>Big idea:</b> Meters per second tells how many meters something travels in ONE second — just like a unit price tells the cost of ONE item.</div>
+      <p style="font-weight:700;font-size:20px;margin-top:14px">“${esc(me.profile.phrase)}”</p></div>`;
+  }
+  if (s.kind === 'parts') return partsHTML(s, head);
+  return '';
+}
+function liveDNL(v, t) {
+  const sec = Math.floor(t + 1e-6), top = [], bot = [];
+  for (let i = 0; i <= 10; i++) { top.push(i <= sec ? fmt(v * i) : ''); bot.push(String(i)); }
+  return dnlSVG({ n: 10, top, bot, hi: sec > 0 ? sec : -1 });
+}
+let lastLiveSec = -1;
+function updateLiveDNL(t) { const el = document.getElementById('liveDNL'); if (!el) return; const sec = Math.floor(t + 1e-6); if (sec === lastLiveSec) return; lastLiveSec = sec; el.innerHTML = liveDNL(+el.dataset.v, t); }
+function dataForm() {
+  const d = V.me.data;
+  return `${d ? `<div class="fb ok">Saved: slow ${d.slow} s, quick ${d.fast} s${d.sim ? ' (Time Trial)' : ''}. You can update it.</div>` : ''}
+   <div class="row" style="margin-top:12px;align-items:flex-end">
+    <div class="grow"><label class="small muted" for="dslow">🐢 Slow moving time (seconds)</label><input id="dslow" data-draft="dslow" class="field" inputmode="numeric" value="${d ? d.slow : ''}"></div>
+    <div class="grow"><label class="small muted" for="dfast">🐆 Quick moving time (seconds)</label><input id="dfast" data-draft="dfast" class="field" inputmode="numeric" value="${d ? d.fast : ''}"></div>
+   </div><div id="derr"></div>
+   <div class="row" style="margin-top:12px"><button class="btn green" data-s="dsave">Save my times</button><button class="btn alt" data-s="sim">🤖 Time Trial with my racer</button></div>
+   <div id="simbox"></div>`;
+}
+function partsHTML(s, head) {
+  const me = V.me;
+  let h = `<div class="card">${head}${lockBanner()}`;
+  if (s.exit) h += `<details class="ctx" style="font-size:15px;margin-bottom:12px" ${V.revealed ? '' : 'open'}><summary><b>Criteria for success</b></summary><ol style="margin:6px 0 0">${SCREENS[SIDX.cfs].items.map(x => `<li>${esc(x)}</li>`).join('')}</ol></details>`;
+  if (s.context) h += `<div class="ctx">${s.context}</div>`;
+  if (s.diagrams) h += s.diagrams.map(([n, f]) => `<div style="margin-top:12px"><b>${n}</b>${f === 'trainA' ? trainA() : trainB()}</div>`).join('');
+  if (s.needsData && !me.data) return h + `<div class="fb info">First, record your Activity 1 times.</div>${dataForm()}</div>`;
+  for (const pt of s.parts) h += partHTML(s, pt, me.ans[pt.id], me);
+  return h + '</div>';
+}
+function partHTML(s, pt, r, me) {
+  const key = `${s.id}.${pt.id}`;
+  const done = r && r.final, dis = V.locked || V.revealed || done;
+  const hideResult = s.exit && !V.revealed;
+  let h = `<div class="part"><h3>${esc(pt.prompt)}</h3>`;
+  if (pt.own === 'slow' || pt.own === 'fast') h += `<div class="small muted">Your data: 10 meters in ${me.data[pt.own]} seconds</div>` + ownDNL(me.data[pt.own], V.revealed ? val(pt.answer, me) : null);
+  if (pt.own === 'fast10') h += `<div class="small muted">Your quick time: 10 meters in ${me.data.fast} seconds</div>`;
+  if (pt.dnl) h += fixedDNL(pt.dnl[0], pt.dnl[1], V.revealed ? pt.answer : null);
+  if (pt.kind === 'num' || pt.kind === 'text') {
+    const v = r ? r.v : '';
+    h += `<div class="ans-row">${pt.kind === 'num' ? `<input class="field" data-draft="${key}" id="in-${key}" inputmode="decimal" autocomplete="off" ${dis ? 'disabled' : ''} value="${esc(done ? v : '')}" placeholder="?">` : `<input class="field" style="max-width:100%" data-draft="${key}" id="in-${key}" autocomplete="off" maxlength="400" ${dis ? 'disabled' : ''} value="${esc(done ? v : '')}" placeholder="${esc(pt.ph || '')}">`}
+      ${pt.unit ? `<span class="unit">${esc(pt.unit)}</span>` : ''}${!dis ? `<button class="btn" data-check="${pt.id}">${s.exit || pt.kind === 'text' ? 'Submit' : 'Check'}</button>` : ''}</div>`;
+  } else {
+    const sel = done ? r.v : drafts[key];
+    const right = V.revealed ? val(pt.answer, me) : null;
+    h += `<div class="opts">${pt.options.map((o, i) => { const on = pt.kind === 'multi' ? (Array.isArray(sel) && sel.includes(i)) : sel === i; const isR = right != null && (Array.isArray(right) ? right.includes(i) : right === i); return `<button class="opt ${on ? 'on' : ''} ${isR ? 'right' : ''}" data-opt="${pt.id}" data-i="${i}" ${dis ? 'disabled' : ''}>${pt.kind === 'multi' ? (on ? '☑ ' : '☐ ') : ''}${esc(o)}</button>`; }).join('')}</div>`;
+    if (!dis) h += `<button class="btn" data-check="${pt.id}">${s.exit || pt.kind === 'poll' ? 'Submit' : 'Check'}</button>`;
+  }
+  // feedback
+  if (r) {
+    if (pt.kind === 'poll' || pt.kind === 'text') h += `<div class="fb info">Submitted ✓</div>`;
+    else if (hideResult) h += `<div class="fb info">Submitted ✓ — results after ${TEACHER} reveals.</div>`;
+    else if (r.ok) h += `<div class="fb ok">✅ ${r.tries === 1 ? 'Nailed it! +100 ⚡' : 'Got it on the retry! +50 ⚡'}</div>`;
+    else if (!r.final) h += `<div class="fb bad">${pt.kind === 'num' ? `You answered ${esc(r.v)}. ` : ''}Not yet — one more try.${r.mis && MIS[r.mis] ? ' ' + esc(MIS[r.mis].h) : pt.hint ? ' ' + esc(pt.hint) : ''}</div>`;
+    else h += `<div class="fb bad">Not quite. ${r.mis && MIS[r.mis] ? esc(MIS[r.mis].h) + ' ' : ''}We’ll talk it through together.</div>`;
+  } else if (!dis && pt.kind === 'num' && pt.unit) h += `<div class="small muted" style="margin-top:6px">Decimals are OK (like 2.5).</div>`;
+  if (V.revealed && pt.explain) h += `<div class="fb reveal">💡 ${esc(val(pt.explain, me))}</div>`;
+  return h + '</div>';
+}
+
+/* ---------- character builder ---------- */
+function builderHTML() {
+  const B = S.builder = S.builder || { step: 0, picks: [] };
+  const N = VIBE.length + 3; // vibe Qs, ride, color, reveal
+  const steps = `<div class="steps">${Array.from({ length: N }, (_, i) => `<i class="${i <= B.step ? 'on' : ''}"></i>`).join('')}</div>`;
+  let h = `<div class="card">${steps}`;
+  if (B.step < VIBE.length) {
+    const q = VIBE[B.step];
+    h += `<span class="tag">Build your racer · ${B.step + 1} of ${N}</span><h2 style="margin:6px 0 14px">${esc(q.q)}</h2><div class="grid">${q.opts.map((o, i) => `<button class="choice ${B.picks[B.step] === i ? 'on' : ''}" data-b="pick" data-i="${i}">${esc(o[0])}</button>`).join('')}</div>`;
+  } else if (B.step === VIBE.length) {
+    h += `<span class="tag">Build your racer · ${B.step + 1} of ${N}</span><h2 style="margin:6px 0 14px">What do you like? Pick your ride.</h2><div class="grid">${Object.entries(RIDES).map(([k, r]) => `<button class="choice ${B.ride === k ? 'on' : ''}" data-b="ride" data-i="${k}"><span class="big">${r.e}</span><span>${esc(r.n)}<br><span class="small muted">${esc(r.like)}</span></span></button>`).join('')}</div>`;
+  } else if (B.step === VIBE.length + 1) {
+    h += `<span class="tag">Build your racer · ${B.step + 1} of ${N}</span><h2 style="margin:6px 0 14px">Pick your team color</h2><div class="row" style="gap:14px">${Object.entries(COLORS).map(([k, c]) => `<button class="swatch ${B.color === k ? 'on' : ''}" style="background:${c}" aria-label="${k}" data-b="color" data-i="${k}"></button>`).join('')}</div>`;
+  } else {
+    if (!B.arch) B.arch = scoreVibe(B.picks);
+    if (!B.phrase) B.phrase = PHRASES[0];
+    const a = ARCH[B.arch], pr = { arch: B.arch, ride: B.ride, color: B.color };
+    h += `<div class="center">${avatar(pr, 120)}<div class="tag" style="margin-top:12px">Your racer</div><h1>${esc(a.name)}</h1><p class="muted" style="font-size:18px">${esc(a.d)}</p></div>
+      <h3 style="font-size:16px;margin:16px 0 8px">Not you? Pick a different racer:</h3><div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(150px,1fr))">${Object.entries(ARCH).map(([k, x]) => `<button class="choice ${B.arch === k ? 'on' : ''}" data-b="arch" data-i="${k}"><span class="big">${x.e}</span><span class="small">${esc(x.name.replace('The ', ''))}</span></button>`).join('')}</div>
+      <h3 style="font-size:16px;margin:16px 0 8px">Your catchphrase:</h3><div class="grid">${PHRASES.map(p => `<button class="choice ${B.phrase === p ? 'on' : ''}" data-b="phrase" data-i="${esc(p)}">“${esc(p)}”</button>`).join('')}</div>
+      <div style="margin-top:18px" class="center"><button class="btn green" data-b="lock">🏁 Lock in my racer</button></div>`;
+  }
+  const canNext = B.step < VIBE.length ? B.picks[B.step] != null : B.step === VIBE.length ? !!B.ride : B.step === VIBE.length + 1 ? !!B.color : false;
+  if (B.step < VIBE.length + 2) h += `<div class="row" style="margin-top:18px">${B.step ? '<button class="btn alt" data-b="back">◀ Back</button>' : ''}<span class="grow"></span><button class="btn green" data-b="next" ${canNext ? '' : 'disabled'}>Next ▶</button></div>`;
+  else h += `<div class="row" style="margin-top:12px"><button class="btn alt sm" data-b="back">◀ Back</button></div>`;
+  return h + '</div>';
+}
+function scoreVibe(picks) {
+  const sc = Object.fromEntries(Object.keys(ARCH).map(k => [k, 0]));
+  picks.forEach((i, q) => { if (i == null) return; const tags = VIBE[q].opts[i][1].split(' '); tags.forEach(t => sc[t] += VIBE[q].w); });
+  const first = VIBE[0].opts[picks[0]]?.[1];
+  return Object.keys(sc).sort((a, b) => sc[b] - sc[a] || (b === first) - (a === first))[0];
+}
+function builderAct(a, i) {
+  const B = S.builder;
+  if (a === 'pick') { B.picks[B.step] = +i; B.arch = null; }
+  if (a === 'ride') B.ride = i;
+  if (a === 'color') B.color = i;
+  if (a === 'arch') B.arch = i;
+  if (a === 'phrase') B.phrase = i;
+  if (a === 'next') B.step++;
+  if (a === 'back') B.step = Math.max(0, B.step - 1);
+  if (a === 'lock') { S.profile = { arch: B.arch, ride: B.ride, color: B.color, phrase: B.phrase }; cnet && cnet.send({ t: 'profile', profile: S.profile }); }
+  sSave();
+  if (a === 'lock' && V) V.me.profile = S.profile;
+  if (a === 'pick' || a === 'ride' || a === 'color') { const st = B.step; if (st < VIBE.length + 2) setTimeout(() => { if (S.builder === B && B.step === st) { B.step++; sSave(); drawScholar(true); } }, 260); }
+  drawScholar(true);
+}
+
+/* ---------- time trial simulation ---------- */
+function runTimeTrial() {
+  if (simRun) return;
+  const slow = 12 + Math.floor(Math.random() * 13), fast = 4 + Math.floor(Math.random() * 5);
+  const box = $('#simbox'); if (!box) return;
+  box.innerHTML = `<div class="track" style="margin-top:14px"><div class="lane" style="height:56px"><div class="finish"></div><div class="runner live" id="simr" style="left:0">${avatar(V.me.profile, 40)}<span class="dist" id="simt">0 s</span></div></div></div><div class="small muted" id="simlbl">Run 1: slow & steady (replay at 4× speed)…</div>`;
+  const runs = [slow, fast]; let k = 0, t0 = performance.now();
+  simRun = true;
+  const step = () => {
+    const el = (performance.now() - t0) / 1000 * 4, T = runs[k];
+    const f = Math.min(1, el / T);
+    const r = $('#simr'); if (!r) { simRun = null; return; }
+    r.style.left = (f * 80).toFixed(1) + '%'; $('#simt').textContent = `${Math.min(el, T).toFixed(1)} s`;
+    if (f < 1) return requestAnimationFrame(step);
+    if (k === 0) { k = 1; t0 = performance.now() + 600; $('#simlbl').textContent = `Slow run: ${slow} s. Run 2: quick & steady…`; return setTimeout(() => requestAnimationFrame(step), 600); }
+    simRun = null;
+    $('#simlbl').textContent = `Time Trial done: slow ${slow} s, quick ${fast} s. Saved!`;
+    cnet.send({ t: 'data', slow, fast, sim: true });
+  };
+  requestAnimationFrame(step);
+}
+
+/* ---------- scholar events ---------- */
+document.addEventListener('click', e => {
+  const t = e.target.closest('button,[data-mk]'); if (!t) return;
+  if (IS_HOST) { if (t.dataset.h) hostAct(t.dataset.h, t.dataset.a); return; }
+  if (t.dataset.b) return builderAct(t.dataset.b, t.dataset.i);
+  if (!V) return;
+  const s = SCREENS[V.screen];
+  if (t.dataset.mk) { if (V.locked || V.revealed) return; mkLocal.has(t.dataset.mk) ? mkLocal.delete(t.dataset.mk) : mkLocal.add(t.dataset.mk); t.classList.toggle('on'); const c = $('#mkcount'); if (c) c.textContent = mkLocal.size + ' marked'; return; }
+  const sa = t.dataset.s;
+  if (sa === 'mksend') { if (mkLocal.size < 3) return toast('Mark at least 3 words.'); cnet.send({ t: 'markup', sid: s.id, marks: [...mkLocal] }); return; }
+  if (sa === 'ready') { cnet.send({ t: 'ready', sid: s.id }); return; }
+  if (sa === 'rebuild') { S.profile = null; S.builder = { step: VIBE.length + 2, picks: S.builder?.picks || [], ride: V.me.profile.ride, color: V.me.profile.color, arch: V.me.profile.arch, phrase: V.me.profile.phrase }; V.me.profile = null; sSave(); drawScholar(true); return; }
+  if (sa === 'sim') return runTimeTrial();
+  if (sa === 'dsave') {
+    const sl = parseNum($('#dslow').value), fa = parseNum($('#dfast').value), err = $('#derr');
+    const bad = m => { err.innerHTML = `<div class="fb bad">${m}</div>`; };
+    if (sl == null || fa == null) return bad('Type both times in seconds.');
+    if (Math.round(sl) < 1 || Math.round(fa) < 1 || sl > 300 || fa > 300) return bad('Times should be between 1 and 300 seconds.');
+    if (Math.round(fa) >= Math.round(sl)) return bad('Your QUICK time should be less than your SLOW time. Check with your partner.');
+    cnet.send({ t: 'data', slow: Math.round(sl), fast: Math.round(fa), sim: false }); err.innerHTML = '<div class="fb info">Saving…</div>'; return;
+  }
+  if (t.dataset.cfs != null) { const set = new Set(V.me.cfs || []); const i = +t.dataset.cfs; set.has(i) ? set.delete(i) : set.add(i); cnet.send({ t: 'cfs', items: [...set] }); V.me.cfs = [...set]; drawScholar(true); return; }
+  if (t.dataset.opt) {
+    const pt = s.parts.find(x => x.id === t.dataset.opt), key = `${s.id}.${pt.id}`, i = +t.dataset.i;
+    if (pt.kind === 'multi') { const cur = new Set(drafts[key] || []); cur.has(i) ? cur.delete(i) : cur.add(i); drafts[key] = [...cur]; }
+    else drafts[key] = i;
+    drawScholar(true); return;
+  }
+  if (t.dataset.check) {
+    const pt = s.parts.find(x => x.id === t.dataset.check), key = `${s.id}.${pt.id}`;
+    let v;
+    if (pt.kind === 'num') { v = $(`#in-${CSS.escape(key)}`).value; if (parseNum(v) == null) return toast('Type a number first.'); drafts[key] = ''; }
+    else if (pt.kind === 'text') { v = $(`#in-${CSS.escape(key)}`).value.trim(); if (!v) return toast('Write your explanation first.'); }
+    else { v = drafts[key]; if (v == null || (Array.isArray(v) && !v.length)) return toast('Choose an answer first.'); if (!Array.isArray(v)) drafts[key] = undefined; }
+    t.disabled = true; t.textContent = 'Checking…';
+    cnet.send({ t: 'answer', sid: s.id, part: pt.id, v });
+    if (pt.kind === 'num') { const inp = $(`#in-${CSS.escape(key)}`); if (inp) inp.value = ''; }
+    setTimeout(() => { if (t.isConnected && t.textContent === 'Checking…') { t.disabled = false; t.textContent = 'Check'; } }, 4000);
+  }
+});
+document.addEventListener('keydown', e => {
+  if (IS_HOST || e.key !== 'Enter') return;
+  const inp = e.target.closest('input[data-draft]'); if (!inp || !inp.id.startsWith('in-')) return;
+  const btn = inp.parentElement.querySelector('[data-check]'); if (btn) btn.click();
+});
+document.addEventListener('input', e => { const i = e.target.closest('[data-draft]'); if (i) drafts[i.dataset.draft] = i.value; });
+// reset objective local marks when screen changes
+
+/* ---------- boot ---------- */
+if (IS_HOST) { document.title = 'Speed Lab · Teacher'; hostStartScreen(); }
+else scholarStart();
+</script>
+</body>
+</html>
